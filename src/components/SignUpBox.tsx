@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { enqueueSnackbar } from 'notistack'
 import axios from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
+import { useRouter } from "next/navigation";
 import {
   InputOTP,
   InputOTPGroup,
@@ -19,14 +20,7 @@ import {
 } from "@/components/ui/input-otp"
 import Link from "next/link"
 type Props = {}
-type UserType = 'student' | 'recruiter' | 'admin'
-type User = {
-  email: string
-  rollNo?: string
-  companyName?: string
-  password: string
-  userType: UserType
-}
+
 
 const SignUpBox = (props: Props) => {
   const [step, setStep] = useState<number>(1)
@@ -39,6 +33,8 @@ const SignUpBox = (props: Props) => {
   const [otp, setOtp] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const router = useRouter();
 
   const togglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
     if (field === 'password') {
@@ -72,6 +68,7 @@ const SignUpBox = (props: Props) => {
           console.log(res.data)
           const msg = res.data.message ?? 'OTP sent successfully';
           enqueueSnackbar(msg, { variant: 'success' });
+          enqueueSnackbar('OTP is valid for 10 minutes', { variant: 'info' });
           if (step < 3) setStep((prev) => prev + 1)
         })
         .catch((err) => {
@@ -109,7 +106,7 @@ const SignUpBox = (props: Props) => {
           { email: email, password: password, role: userType, rollNo: rollNo, companyName: companyName })
         .then((res) => {
           enqueueSnackbar(res.data.message, { variant: 'success' });
-
+          router.push('/student/home')
         })
         .catch((err) => {
           enqueueSnackbar(err.response?.data?.error ?? 'Failed to sign up', { variant: 'error' });
