@@ -18,6 +18,7 @@ import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   InputOTP,
   InputOTPGroup,
@@ -40,11 +41,11 @@ const SignInBox = (props: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const [rememberMe, SetRememberMe] = useState(false)
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword);
+    setShowPassword(!showPassword);
   };
 
   const handleLogIn = async () => {
@@ -61,10 +62,10 @@ const SignInBox = (props: Props) => {
     //     enqueueSnackbar("Invalid credentials", { variant: "error" });
     // });
     const response = await doCredentialLogin({ email, password });
-    if(!!response.error){
+    if (!!response.error) {
       enqueueSnackbar(response.error, { variant: "error" });
       return;
-    }else{
+    } else {
       enqueueSnackbar("Logged in successfully", { variant: "success" });
       router.push("/student/home");
     }
@@ -103,7 +104,7 @@ const SignInBox = (props: Props) => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                    // className="border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 pr-10"
+                      // className="border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 pr-10"
                     />
                     <button
                       type="button"
@@ -114,9 +115,28 @@ const SignInBox = (props: Props) => {
                     </button>
                   </div>
                 </div>
+                
               </div>
             </div>
-
+            <div className="flex flex-row flex-between w-full relative mt-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="rememberUser"
+                      name="rememberUser"
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => SetRememberMe(checked as boolean)}
+                    />
+                    <Label htmlFor="recruiterAcceptPolicy" className="text-sm">
+                      Remember me
+                    </Label>
+                  </div>
+                  <Link
+                    href="/forgot-password"
+                    className="text-emerald-500 text-sm hover:underline ml-auto"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
             <div className="flex justify-between mt-6">
               <Button onClick={handleLogIn} className="ml-auto">
                 Log In

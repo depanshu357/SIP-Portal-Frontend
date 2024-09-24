@@ -12,13 +12,15 @@ import { enqueueSnackbar } from 'notistack'
 import axios from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
 import { useRouter } from "next/navigation";
+import Link from "next/link"
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
-import Link from "next/link"
+import { Checkbox } from "@/components/ui/checkbox"
+
 type Props = {}
 
 
@@ -33,6 +35,9 @@ const SignUpBox = (props: Props) => {
   const [otp, setOtp] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [studentPolicy, setStudentPolicy] = useState(false)
+  const [recruiterPolicy, setRecruiterPolicy] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter();
 
@@ -54,14 +59,21 @@ const SignUpBox = (props: Props) => {
         } else if (!email.endsWith('@iitk.ac.in')) {
           enqueueSnackbar('Please enter a valid IITK email', { variant: 'error' });
           return;
+        }else if (!studentPolicy) {
+          enqueueSnackbar('Please accept the policy', { variant: 'error' });
+          return;
         }
       } else if (userType === 'recruiter') {
         if (email === '' || companyName === '') {
           enqueueSnackbar('Please fill all the fields', { variant: 'error' })
           return;
+        }else if(!recruiterPolicy){
+          enqueueSnackbar('Please accept the policy', { variant: 'error' });
+          return;
         }
       }
       // console.log(email, rollNo, companyName, process.env.API_KEY)
+      setLoading(true)
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/send-otp`, { email: email })
         .then((res) => {
@@ -70,25 +82,29 @@ const SignUpBox = (props: Props) => {
           enqueueSnackbar(msg, { variant: 'success' });
           enqueueSnackbar('OTP is valid for 10 minutes', { variant: 'info' });
           if (step < 3) setStep((prev) => prev + 1)
+          setLoading(false)
         })
         .catch((err) => {
           console.log(err)
           enqueueSnackbar(err.response?.data?.error ?? 'Error sending OTP', { variant: 'error' });
+          setLoading(false)
         })
     } else if (step === 2) {
       if (otp.length !== 6) {
         enqueueSnackbar('Please enter a valid OTP', { variant: 'error' });
         return;
       }
-
+      setLoading(true)
       axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/verify-otp`, { email: email, otp: otp })
         .then((res) => {
           enqueueSnackbar(res.data.message, { variant: 'success' });
           if (step < 3) setStep((prev) => prev + 1)
+          setLoading(false)
         })
         .catch((err) => {
           enqueueSnackbar(err.response?.data?.error ?? 'Failed to verify OTP', { variant: 'error' });
+          setLoading(false)
         })
     } else if (step === 3) {
       if (password === '' || confirmPassword === '') {
@@ -101,15 +117,18 @@ const SignUpBox = (props: Props) => {
         enqueueSnackbar('Password should be at least 6 characters long', { variant: 'error' });
         return;
       }
+      setLoading(true)
       axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/sign-up`,
           { email: email, password: password, role: userType, rollNo: rollNo, companyName: companyName })
         .then((res) => {
           enqueueSnackbar(res.data.message, { variant: 'success' });
+          setLoading(false)
           router.push('/student/home')
         })
         .catch((err) => {
           enqueueSnackbar(err.response?.data?.error ?? 'Failed to sign up', { variant: 'error' });
+          setLoading(false)
         })
     }
     // if (step < 3) setStep(step + 1)
@@ -156,7 +175,23 @@ const SignUpBox = (props: Props) => {
                       <Label htmlFor="roll-no">Roll Number</Label>
                       <Input id="roll-no" placeholder="Enter your roll number" value={rollNo} onChange={(e) => setRollNo(e.target.value)} />
                     </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="studentAcceptPolicy" 
+                          name="acceptPolicy"
+                          checked={studentPolicy}
+                          onCheckedChange={(checked) => setStudentPolicy(checked as boolean)}
+                          className="peer checked:bg-emerald-600"
+                        />
+                        <Label 
+                          htmlFor="recruiterAcceptPolicy" 
+                          className="text-sm peer-checked:text-emerald-600"
+                        >
+                          I accept the <Link className="text-emerald-600" href="/sign-in">intern policy</Link>
+                        </Label>
+                      </div>
                   </div>
+
                 </TabsContent>
                 <TabsContent value="recruiter" >
                   <div className="space-y-4">
@@ -174,6 +209,21 @@ const SignUpBox = (props: Props) => {
                       <Label htmlFor="company-name">Company Name</Label>
                       <Input id="company-name" placeholder="Enter your company name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
                     </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="recruiterAcceptPolicy" 
+                          name="acceptPolicy"
+                          checked={recruiterPolicy}
+                          onCheckedChange={(checked) => setRecruiterPolicy(checked as boolean)}
+                          className="peer checked:bg-emerald-600"
+                        />
+                        <Label 
+                          htmlFor="recruiterAcceptPolicy" 
+                          className="text-sm peer-checked:text-emerald-600"
+                        >
+                          I accept the <Link className="text-emerald-600" href="/sign-in">company policy</Link>
+                        </Label>
+                      </div>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -247,6 +297,7 @@ const SignUpBox = (props: Props) => {
                     </button>
                   </div>
                 </div>
+                
               </div>
             )}
 
@@ -256,7 +307,7 @@ const SignUpBox = (props: Props) => {
                   Back
                 </Button>
               )}
-              <Button onClick={handleNext} className="ml-auto">
+              <Button onClick={handleNext} className="ml-auto" disabled={loading}>
                 {step === 1 ? "Send OTP" : step === 2 ? "Verify" : "Create Account"}
               </Button>
             </div>
@@ -283,7 +334,7 @@ const SignUpBox = (props: Props) => {
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-emerald-500 hover:underline">
+            <Link href="/sign-in" className="text-emerald-500 hover:underline">
               Log in
             </Link>
           </p>

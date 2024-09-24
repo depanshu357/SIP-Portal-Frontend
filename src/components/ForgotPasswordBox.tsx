@@ -272,7 +272,7 @@ const ForgotPasswordBox = (props: Props) => {
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-emerald-500 hover:underline">
+            <Link href="/sign-in" className="text-emerald-500 hover:underline">
               Log in
             </Link>
           </p>

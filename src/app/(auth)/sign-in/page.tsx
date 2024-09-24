@@ -3,10 +3,12 @@ import SignInBox from "@/components/SignInBox";
 import { Snackbar } from "@mui/material";
 import Image from "next/image"
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import {useRouter} from 'next/navigation'
 
 type Props = {}
 
 const SignIn = (props: Props) => {
+  const router = useRouter();
   return (
     <div className='min-h-screen bg-emerald-200 flex items-center justify-center h-full'>
 
@@ -24,7 +26,7 @@ const SignIn = (props: Props) => {
           <div className='relative p-4 mx-2 h-full bg-white rounded-lg shadow-lg hidden md:col-span-7 md:flex text-black justify-center items-center'>
             {/* <button onClick={() => enqueueSnackbar('That was easy!')}>Show snackbar</button> */}
             <div className="flex flex-row absolute top-4 right-4 gap-4 text-emerald-600">
-              <div className="flex flex-row cursor-pointer">
+              <div className="flex flex-row cursor-pointer" onClick={() => {router.push('/sign-up')}}>
                 <Image src='/assets/images/user.png' width={24} height={20} alt="creativity" />
                 Sign up
               </div>
@@ -34,6 +36,10 @@ const SignIn = (props: Props) => {
               </div>
             </div> 
             <Image src='/assets/images/log-in.jpeg' width={500} height={500} alt="creativity" />
+            <div className="absolute bottom-4 right-4 flex flex-row">
+              <h1 className="text-[11px] text-gray-700">Created and <br/> Managed by</h1>
+              <Image src='/assets/images/E-Cell_logo.png' width={180} height={180} alt="creativity" />
+            </div>
           </div>
         </div>
       </div>
