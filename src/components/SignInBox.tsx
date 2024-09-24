@@ -25,6 +25,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Link from "next/link";
+import { doCredentialLogin } from "@/app/actions";
 type Props = {};
 type UserType = "student" | "recruiter" | "admin";
 type User = {
@@ -47,18 +48,26 @@ const SignInBox = (props: Props) => {
   };
 
   const handleLogIn = async () => {
-    axios
-    .post(`${process.env.NEXT_PUBLIC_API_KEY}/log-in`, {
-        email,
-        password,
-    }).then((response) => {
-        if (response.status === 200) {
-            enqueueSnackbar("Logged in successfully", { variant: "success" });
-            router.push("/student/home");
-        }
-    }).catch((error) => {
-        enqueueSnackbar("Invalid credentials", { variant: "error" });
-    });
+    // axios
+    // .post(`${process.env.NEXT_PUBLIC_API_KEY}/log-in`, {
+    //     email,
+    //     password,
+    // }).then((response) => {
+    //     if (response.status === 200) {
+    //         enqueueSnackbar("Logged in successfully", { variant: "success" });
+    //         router.push("/student/home");
+    //     }
+    // }).catch((error) => {
+    //     enqueueSnackbar("Invalid credentials", { variant: "error" });
+    // });
+    const response = await doCredentialLogin({ email, password });
+    if(!!response.error){
+      enqueueSnackbar(response.error, { variant: "error" });
+      return;
+    }else{
+      enqueueSnackbar("Logged in successfully", { variant: "success" });
+      router.push("/student/home");
+    }
   };
 
   return (
@@ -119,7 +128,7 @@ const SignInBox = (props: Props) => {
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Not yet registered?{" "}
-            <Link href="/login" className="text-emerald-500 hover:underline">
+            <Link href="/sign-up" className="text-emerald-500 hover:underline">
               Sign Up!
             </Link>
           </p>
