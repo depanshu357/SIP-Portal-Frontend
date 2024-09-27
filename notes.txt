@@ -1,0 +1,1 @@
+next-auth@beta is diff from next-auth and may give errors

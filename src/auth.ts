@@ -1,91 +1,83 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { getUserByEmail } from "./data/users";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 type User = {
-    FirstName:  string 
-	LastName:  string
-	Email:     string
-	Password:   string 
-	IsVerified: boolean
-    Role:      string
-    Id:        number
-    CreateAt:  string
-    UpdateAt:  string
-    DeletedAt: string
-}
+  ID: string;
+  Email: string;
+  Password: string;
+  Role: "admin" | "student" | "recruiter" | "superadmin";
+  IsVerified?: boolean;
+};
 
-export const {
-    auth,
-    signIn,
-    signOut,
-    handlers: { GET, POST },
-} = NextAuth({
-    session: {
-        strategy: "jwt",
-    },
-    secret: process.env.NEXTAUTH_SECRET,
-    providers: [
-        CredentialsProvider({
-            credentials: {
-                email: {},
-                password: {},
-            },
-            async authorize(credentials): Promise<any> {
-                if (!credentials) return null;
-            
-                try {
-                    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_KEY}/log-in`, {
-                        email: credentials.email,
-                        password: credentials.password,
-                    });
-            
-                    return response.data.user;
-                    // const user:User | undefined = getUserByEmail(credentials?.email);
-                    // console.log(user);
-                    // if (user) {
-                    //     const isMatch = user?.password === credentials.password;
+type Credential = {
+  email: string;
+  password: string;
+};
 
-                    //     if (isMatch) {
-                    //         return user;
-                    //     } else {
-                    //         throw new Error("Email or Password is not correct");
-                    //     }
-                    // } else {
-                    //     throw new Error("User not found");
-                    // }
-                } catch (error) {
-                    return null;
-                }
+export const { auth, signIn, signOut, handlers } = NextAuth({
+  debug: true,
+  secret: process.env.NEXTAUTH_SECRET,
+  ...authConfig,
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials): Promise<any> {
+        if (!credentials) return null;
+        // console.log("credentials", credentials);
+        // const user = getUserByEmail(credentials?.email as string);
+        // console.log("user", user);
+        // if (user) {
+        //   const isMatch = user?.Password === credentials.password;
+
+        //   if (isMatch) {
+        //     return user;
+        //   } else {
+        //     console.log("Email or Password is not correct");
+        //     return null;
+        //     throw new Error("Email or Password is not correct");
+        //   }
+        // } else {
+        //   console.log("User not found");
+        //   return null;
+        //   throw new Error("User not found");
+        // }
+        try {
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_KEY}/log-in`,
+            {
+              email: credentials.email,
+              password: credentials.password,
             }
-            
-        }),
-    ],
-    callbacks:{
-        async session({session, token}){
-            if(token){
-                session.user.email = token.email ?? ""; // Provide a default value if token.email is null or undefined
-                session.user.isVerified = token.isVerified ?? false; // Provide a default value if token.isVerified is null or undefined
-                session.user.role = token.role ?? "none"; // Provide a default value if token.role is null or undefined
-                if (typeof token.id === 'string' || typeof token.id === 'number') {
-                    session.user.id = token.id.toString();
-                } else {
-                    session.user.id = ""; // Provide a default value if token.id is not a string or number
-                } // Provide a default value if token.id is null or undefined
+          );
+          const user = await response.data.user;
+          console.log("user", response.data.user);
+          if (user ) {
+            const isMatch = bcrypt.compare(
+              credentials.password as string,
+              user.Password
+            );
+            if (!!isMatch) {
+              return user;
+            } else {
+              throw new Error("Email or Password is not correct");
             }
-            return session
-        },
-        async jwt({token, user}){
-            console.log(token, user)
-            if(user){
-                token.id = user.ID;
-                token.email = user.Email;
-                token.isVerified = user.IsVerified;
-                token.role = user.Role;
-            }
-            console.log(token)
-            return token;
+          }else {
+            throw new Error("User not found");
+          }
+        } catch (error) {
+          throw new Error(error as string);
         }
-    }
+      },
+    }),
+  ],
+  session: {
+    strategy: 'jwt',
+},
+  
 });

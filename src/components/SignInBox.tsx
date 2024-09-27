@@ -49,6 +49,7 @@ const SignInBox = (props: Props) => {
   };
 
   const handleLogIn = async () => {
+    console.log(email, password);
     // axios
     // .post(`${process.env.NEXT_PUBLIC_API_KEY}/log-in`, {
     //     email,

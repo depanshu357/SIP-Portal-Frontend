@@ -1,29 +1,29 @@
 type User = {
-    email: string;
-    password: string;
-    role: "admin" | "student" | "recruiter";
-    isVerified?: boolean;
+    Email: string;
+    Password: string;
+    Role: "admin" | "student" | "recruiter";
+    IsVerified?: boolean;
 }
 const users: Array<User> = [
     {
-        email: "ataps@email.com",
-        password: "asdfasdf",
-        role: "admin",
-        isVerified: true
+        Email: "ataps@email.com",
+        Password: "asdfasdf",
+        Role: "admin",
+        IsVerified: true
     },
     {
-        email: "depanshus21@iitk.ac.in",
-        password: "asdfasdf",
-        role: "student",
-        isVerified: true
+        Email: "depanshus21@iitk.ac.in",
+        Password: "asdfasdf",
+        Role: "student",
+        IsVerified: true
     },
     {
-        email:"depanshusahu057@gmail.com",
-        password: "asdfasdf",
-        role: "recruiter",
-        isVerified: true
+        Email:"depanshusahu057@gmail.com",
+        Password: "asdfasdf",
+        Role: "recruiter",
+        IsVerified: true
     }
 ]
 export const getUserByEmail = (email: string) => {
-    return users.find(user => user.email === email);
+    return users.find(user => user.Email === email);
 }
