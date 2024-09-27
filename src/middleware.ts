@@ -1,6 +1,6 @@
 import {authConfig} from "./auth.config"
 import NextAuth from "next-auth"
-import { NextRequest } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { PUBLIC_ROUTES, LOGIN, ROOT } from "@/lib/routes"
 // Use only one of the two middleware options below
 // 1. Use middleware directly
@@ -13,11 +13,16 @@ export default auth(async function middleware(req: NextRequest) {
   const session = await auth()
   console.log("session middleware", session)
   const isAuthenticated = !!session?.user;
-  console.log("isAuthenticated", nextUrl.pathname, isAuthenticated)
-
-
+  console.log("isAuthenticated",isAuthenticated, nextUrl.pathname)
+  const isPublicRoute = PUBLIC_ROUTES.find(route => nextUrl.pathname.startsWith(route)) 
+                      || nextUrl.pathname === ROOT;
+  console.log("isPublicRoute",isPublicRoute)
+  if(!isAuthenticated && !isPublicRoute){
+    return NextResponse.redirect(new URL(LOGIN, nextUrl))
+  }
+              
 })
 
 export const config = {
-  matcher: ["/sign-up","/sign-in","/forgot-password","/student"], 
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"], 
 };
