@@ -9,10 +9,10 @@ const Home = (props: Props) => {
   const {data: session} = useSession()
   // console.log(session)
   return (
-    <div>Student Home
+    <div >Student Home
       <div>
         {session ? (
-          <div>
+          <div> 
             <p>Signed in as {session?.user?.email}</p>
           </div>
         ) : (

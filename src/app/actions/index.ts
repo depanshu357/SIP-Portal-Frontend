@@ -1,6 +1,7 @@
 "use server";
 
-import { signIn, signOut } from "@/auth";
+import { signIn } from "@/auth";
+import { signOut } from "next-auth/react";
 
 type formData = {
   email: string;
@@ -25,5 +26,5 @@ export async function doCredentialLogin(formData: formData) {
 }
 
 export async function doSignOut() {
-    await signOut({ redirectTo: "/" });
+    await signOut({ callbackUrl: "/",redirect: false });
 }

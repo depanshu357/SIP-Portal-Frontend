@@ -1,11 +1,13 @@
-import React from 'react'
+import StudentSidebar from '@/components/Sidebar/StudentSidebar'
 import { SessionProvider } from 'next-auth/react'
 type Props = {}
 
-const layout = ({children}: {children: React.ReactNode}, session: any): React.ReactNode => {
+const layout = ({ children }: { children: React.ReactNode }, session: any): React.ReactNode => {
   return (
     <SessionProvider session={session}>
-      {children}
+      <StudentSidebar >
+        {children}
+      </StudentSidebar >
     </SessionProvider>
   )
 }

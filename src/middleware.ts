@@ -13,12 +13,15 @@ export default auth(async function middleware(req: NextRequest) {
   const session = await auth()
   console.log("session middleware", session)
   const isAuthenticated = !!session?.user;
+  const role = await session?.user?.role;
   console.log("isAuthenticated",isAuthenticated, nextUrl.pathname)
   const isPublicRoute = PUBLIC_ROUTES.find(route => nextUrl.pathname.startsWith(route)) 
                       || nextUrl.pathname === ROOT;
   console.log("isPublicRoute",isPublicRoute)
   if(!isAuthenticated && !isPublicRoute){
     return NextResponse.redirect(new URL(LOGIN, nextUrl))
+  }else if(isAuthenticated && isPublicRoute){
+    return NextResponse.redirect(new URL('/'+ role+'/profile',nextUrl))
   }
               
 })

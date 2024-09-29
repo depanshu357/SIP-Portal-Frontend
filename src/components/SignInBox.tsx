@@ -68,7 +68,7 @@ const SignInBox = (props: Props) => {
       return;
     } else {
       enqueueSnackbar("Logged in successfully", { variant: "success" });
-      router.push("/student/home");
+      router.push("/student/profile");
     }
   };
 
