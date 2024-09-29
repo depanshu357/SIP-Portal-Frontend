@@ -126,7 +126,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                       link.variant === "default" &&
                         "shadow-md bg-white text-emerald-700 hover:bg-white dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                       "justify-start"
-                    ) + " w-[160px]  gap-2 "
+                    ) + " w-[180px]  gap-2 "
                   }
                   onClick={() => handleLinkClick(index)}
                 >
@@ -155,7 +155,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
             className={
               isCollapsed
                 ? "w-full"
-                : "w-[170px]" +
+                : "w-[180px]" +
                   " bg-white rounded-md p-2 flex flex-row items-center gap-2 w-[170px] overflow-x-clip "
             }
           >
@@ -225,7 +225,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                     link.variant === "default" &&
                       "shadow-md bg-white text-emerald-700 hover:bg-white dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                     "justify-start"
-                  ) + " w-[160px]  gap-2 "
+                  ) + " w-[180px]  gap-2 "
                 }
                 onClick={() => handleLinkClick(index)}
               >

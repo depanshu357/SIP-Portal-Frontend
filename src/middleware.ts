@@ -43,7 +43,7 @@ export default auth(async function middleware(req: NextRequest) {
       }
     } else if (role === "admin" || role === "superadmin") {
       if (pathname.startsWith("/student") || pathname.startsWith("/recruiter")) {
-        return NextResponse.redirect(new URL("/admin/student", req.nextUrl));
+        return NextResponse.redirect(new URL("/admin/admin", req.nextUrl));
       }
     }
   }
