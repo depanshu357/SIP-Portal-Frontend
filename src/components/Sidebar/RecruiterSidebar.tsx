@@ -8,6 +8,7 @@ import {
   ArchiveX,
   Bell,
   File,
+  FileBox,
   FileText,
   Inbox,
   MessagesSquare,
@@ -22,6 +23,7 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WorkIcon from "@mui/icons-material/Work";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 const WorkOutlineModifiedIcon = () => {
   return (
@@ -39,7 +41,7 @@ type LinkType = {
   href: string;
 };
 
-const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
+const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [links, setLinks] = useState<Array<LinkType>>([
     {
@@ -47,35 +49,42 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
       label: "128",
       icon: Bell,
       variant: "default",
-      href: "/student/notifications",
+      href: "/recruiter/notifications",
     },
     {
-      title: "Resume",
-      label: "9",
-      icon: FileText,
+      title: "Job Description",
+      label: "0",
+      icon: FileBox,
       variant: "ghost",
-      href: "/student/resume",
+      href: "/recruiter/submit-proforma",
     },
     {
-      title: " Job Openings",
+      title: "Job Openings",
       label: "0",
       icon: WorkOutlineModifiedIcon,
       variant: "ghost",
-      href: "/student/job-openings",
+      href: "/recruiter/job-openings",
+    },
+    {
+      title: "Applicants",
+      label: "",
+      icon: ListAltIcon,
+      variant: "ghost",
+      href: "/recruiter/applicants",
     },
     {
       title: "Profile",
-      label: "23",
+      label: "",
       icon: UserRoundPen,
       variant: "ghost",
-      href: "/student/profile",
+      href: "/recruiter/profile",
     },
     {
       title: "Contact us",
       label: "",
       icon: Phone,
       variant: "ghost",
-      href: "/student/contact-us",
+      href: "/recruiter/contact-us",
     },
   ]);
   return (
@@ -86,7 +95,7 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
           setIsCollapsed={setIsCollapsed}
           links={links}
           setLinks={setLinks}
-          breakpoint={2}
+          breakpoint = {3}
         />
       </TooltipProvider>
       <div className="h-10 bg-emerald-200 w-full fixed top-0 right-0"></div>
@@ -95,4 +104,4 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default StudentSidebar;
+export default RecruiterSidebar;

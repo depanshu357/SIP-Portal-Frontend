@@ -51,12 +51,7 @@ const ForgotPasswordBox = (props: Props) => {
       if (email === "") {
         enqueueSnackbar("Please fill all the fields", { variant: "error" });
         return;
-      } else if (!email.endsWith("@iitk.ac.in")) {
-        enqueueSnackbar("Please enter a valid IITK email", {
-          variant: "error",
-        });
-        return;
-      }
+      } 
 
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/send-otp`, { email: email })

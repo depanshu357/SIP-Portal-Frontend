@@ -21,7 +21,6 @@ import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
 import { Icon } from "@mui/material";
-import { doSignOut } from "@/app/actions";
 import { useState } from "react";
 type IconType = typeof Icon;
 interface NavProps {
@@ -35,9 +34,10 @@ interface NavProps {
     href: string;
   }[];
   setLinks?: (links: any[]) => void;
+  breakpoint?: number
 }
 
-const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed }: NavProps) => {
+const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavProps) => {
   const { data: session } = useSession();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const handleLinkClick = (index: number) => {
@@ -144,7 +144,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed }: NavProps) => {
                 </span>
               )} */}
                 </Link>
-                {index === 2 && <Separator className="my-1 bg-emerald-400" />}
+                {index === breakpoint && <Separator className="my-1 bg-emerald-400" />}
               </>
             )
           )}
@@ -177,7 +177,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed }: NavProps) => {
                 {session?.user?.name ?? session?.user?.role ?? "User"}
               </span>
               <span className="text-gray-500 text-sm">
-                {session?.user?.email?.split("@")[0] ?? "Email"}
+                {session?.user?.email?.split('@')[0] ?? "Email"}
               </span>
             </div>
           </div>
@@ -185,12 +185,13 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed }: NavProps) => {
             className={
               "cursor-pointer hover:bg-white flex flex-row p-2 gap-2 rounded-md"
             }
+            onClick={() =>
+                signOut({ redirect: true, callbackUrl: "/sign-in" })
+              }
           >
             <LogOut className="h-5 w-5" />
             <span
-              onClick={() =>
-                signOut({ redirect: true, callbackUrl: "/sign-in" })
-              }
+              
               className={isCollapsed ? "hidden" : "block"}
             >
               Sign out
