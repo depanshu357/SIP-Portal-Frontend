@@ -108,7 +108,7 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
         />
       </TooltipProvider>
       <div className="h-10 bg-emerald-200 w-full fixed top-0 right-0"></div>
-      <div className="mt-10">{children}</div>
+      <div className="mt-8 bg-emerald-50 w-full overflow-hidden p-4">{children}</div>
     </div>
   );
 };

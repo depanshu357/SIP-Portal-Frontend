@@ -65,7 +65,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
       {/* desktop view */}
       <div
         data-collapsed={isCollapsed}
-        className="drop-shadow-lg hidden md:flex group flex-col justify-between gap-4 py-2 data-[collapsed=true]:py-2 align-b h-screen bg-emerald-200 z-10"
+        className="drop-shadow-lg hidden md:flex group flex-col justify-between gap-4 py-2 data-[collapsed=true]:py-2 align-b h-screen bg-emerald-200 z-40"
       >
         <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
           {/* <div> */}
@@ -201,7 +201,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
       </div>
       {/* mobile view */}
       {!isNavOpen && <ArrowRight className="visible md:hidden h-5 w-5 m-auto cursor-pointer absolute top-2 left-2 z-20 text-emerald-600" onClick={() => setIsNavOpen(true)}/>}
-      <div className={`${!isNavOpen ? "-translate-x-full" : ""} ease-in-out duration-500 absolute z-10 shadow-md md:hidden flex flex-col justify-between gap-4 py-2 align-b h-screen bg-emerald-200 `}>
+      <div className={`${!isNavOpen ? "-translate-x-full" : ""} ease-in-out duration-500 absolute z-40 shadow-md md:hidden flex flex-col justify-between gap-4 py-2 align-b h-screen bg-emerald-200 `}>
         <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
           {/* <div> */}
           <div className="text-emerald-600 font-bold text-xl flex justify-center">
@@ -215,7 +215,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
           </div>
           <Separator className="my-1 bg-emerald-400" />
           {links.map((link, index) => (
-            <>
+            <div key={index}>
               <Link
                 key={index}
                 href={link.href}
@@ -233,7 +233,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                 {link.title}
               </Link>
               {index === 2 && <Separator className="my-1 bg-emerald-400" />}
-            </>
+            </div>
           ))}
           {/* </div> */}
         </nav>
@@ -286,7 +286,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
         </div>
       </div>
       {isNavOpen && (
-        <div className="visible md:hidden w-screen h-screen bg-gray-600 bg-opacity-25 absolute" onClick={() => setIsNavOpen(false)}>
+        <div className="visible md:hidden w-screen h-screen bg-gray-600 bg-opacity-25 absolute z-30" onClick={() => setIsNavOpen(false)}>
             
         </div>
       )}
