@@ -5,6 +5,7 @@ import {
   GridToolbar,
   GridToolbarExport,
   GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 
 import { dataGridTheme } from "@/theme";
@@ -23,9 +24,14 @@ const columns = [
 
 function Toolbar() {
   return (
-    <div>
-      <GridToolbarFilterButton />
-      <GridToolbarExport />
+    <div className="flex flex-row justify-between">
+      <div>
+        <GridToolbarFilterButton />
+        <GridToolbarExport />
+      </div>
+      <div>
+        <GridToolbarQuickFilter />
+      </div>
     </div>
   );
 }
