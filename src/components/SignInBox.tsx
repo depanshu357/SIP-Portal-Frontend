@@ -2,11 +2,9 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/theme";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,29 +13,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { enqueueSnackbar } from "notistack";
-import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import Link from "next/link";
 import { doCredentialLogin } from "@/app/actions";
-type Props = {};
 type UserType = "student" | "recruiter" | "admin";
-type User = {
-  email: string;
-  rollNo?: string;
-  companyName?: string;
-  password: string;
-  userType: UserType;
-};
 
-const SignInBox = (props: Props) => {
+
+const SignInBox = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

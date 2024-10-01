@@ -2,7 +2,6 @@
 
 import {
   DataGrid,
-  GridToolbar,
   GridToolbarExport,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
@@ -13,7 +12,6 @@ import { ThemeProvider } from "@emotion/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
-type Props = {};
 const columns = [
   { field: "Email", headerName: "Email", minWidth: 200, flex: 1 },
   { field: "IsVerified", headerName: "IsVerified", minWidth: 100, flex: 1 },
@@ -33,8 +31,11 @@ function Toolbar() {
   );
 }
 
-const AdminStudent = (props: Props) => {
-  const [rows, setRows] = useState<any>([]);
+type RowUser = { id: string; Email: string; IsVerified: boolean; }
+type ReceivedUser = { ID: string; Email: string; IsVerified: boolean; }
+
+const AdminStudent = () => {
+  const [rows, setRows] = useState<Array<RowUser>>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,8 +43,8 @@ const AdminStudent = (props: Props) => {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_KEY}/admin/student-list`);
         console.log(res.data.users);
         const users = await res.data.users
-        users.forEach((user: { ID: string; Email: string; IsVerified: boolean; }) => {
-          setRows((prev: { ID: string; Email: string; IsVerified: boolean;}[]) => [...prev, { id: user.ID, Email: user.Email, IsVerified: user.IsVerified }]);
+        users.forEach((user: ReceivedUser) => {
+          setRows((prev: RowUser[]) => [...prev, { id: user.ID, Email: user.Email, IsVerified: user.IsVerified }]);
         });
         // setRows(res.data.users);
 

@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-const Resume = (props: Props) => {
+const Resume = () => {
   return (
     <div>Resume</div>
   )

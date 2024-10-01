@@ -4,18 +4,6 @@ import { authConfig } from "./auth.config";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 
-type User = {
-  ID: string;
-  Email: string;
-  Password: string;
-  Role: "admin" | "student" | "recruiter" | "superadmin";
-  IsVerified?: boolean;
-};
-
-type Credential = {
-  email: string;
-  password: string;
-};
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   debug: true,
@@ -27,7 +15,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<any> {
+      async authorize(credentials){
         if (!credentials) return null;
         // console.log("credentials", credentials);
         // const user = getUserByEmail(credentials?.email as string);

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/theme";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -25,9 +24,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import Link from "next/link";
-type Props = {};
 
-const ForgotPasswordBox = (props: Props) => {
+const ForgotPasswordBox = () => {
   const [step, setStep] = useState<number>(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

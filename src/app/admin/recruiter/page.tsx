@@ -2,7 +2,6 @@
 
 import {
   DataGrid,
-  GridToolbar,
   GridToolbarExport,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
@@ -13,7 +12,6 @@ import { ThemeProvider } from "@emotion/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
-type Props = {};
 const columns = [
   { field: "Company", headerName: "Company", minWidth: 100, flex: 1 },
   { field: "Email", headerName: "Email", minWidth: 200, flex: 1 },
@@ -34,8 +32,23 @@ function Toolbar() {
   );
 }
 
-const RecruiterList = (props: Props) => {
-  const [rows, setRows] = useState<any>([]);
+type ReceivedUser = {
+  ID: "",
+  Email: "",
+  IsVerified: false,
+  Role?: "",
+  Company?: "",
+};
+
+type RowUser = {
+  id: string;
+  Email: string;
+  IsVerified: boolean;
+  Company?: string;
+};
+
+const RecruiterList = () => {
+  const [rows, setRows] = useState<Array<RowUser>>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,9 +59,9 @@ const RecruiterList = (props: Props) => {
         console.log(res.data.users);
         const users = await res.data.users;
         users.forEach(
-          (user: { ID: string; Email: string; IsVerified: boolean }) => {
+          (user: ReceivedUser) => {
             setRows(
-              (prev: { ID: string; Email: string; IsVerified: boolean }[]) => [
+              (prev: RowUser[]) => [
                 ...prev,
                 { id: user.ID, Email: user.Email, IsVerified: user.IsVerified },
               ]

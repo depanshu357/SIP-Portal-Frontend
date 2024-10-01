@@ -1,8 +1,7 @@
 import React from 'react'
 
-type Props = {}
 
-const RecruiterNotifications = (props: Props) => {
+const RecruiterNotifications = () => {
   return (
     <div>RecruiterNotifications</div>
   )
