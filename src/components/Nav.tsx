@@ -4,10 +4,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  Link2,
-  LinkIcon,
   LogOut,
-  LucideIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -20,9 +17,7 @@ import {
 import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
-import { Icon } from "@mui/material";
 import { useState } from "react";
-type IconType = typeof Icon;
 interface NavProps {
   isCollapsed: boolean;
   setIsCollapsed?: (isCollapsed: boolean) => void;
@@ -33,11 +28,11 @@ interface NavProps {
     variant: "default" | "ghost";
     href: string;
   }[];
-  setLinks?: (links: any[]) => void;
+  setLinks?: (links: []) => void;
   breakpoint?: number
 }
 
-const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavProps) => {
+const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavProps & { setLinks?: (links: { title: string; label?: string; icon: any; variant: "default" | "ghost"; href: string; }[]) => void }) => {
   const { data: session } = useSession();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const handleLinkClick = (index: number) => {
@@ -49,15 +44,22 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
     //     links[i].variant = "ghost";
     //   }
     // });
-    const newLinks = links?.map((link, i) => {
+    const newLinks:{
+      title: string;
+      label?: string;
+      icon: any;
+      variant: "default" | "ghost";
+      href: string;
+    }[] = links?.map((link, i) => {
       if (i === index) {
         link.variant = "default";
       } else {
         link.variant = "ghost";
       }
       return link;
-    });
+    }) ?? [];
     if (newLinks === undefined) return;
+    if (setLinks === undefined) return;
     setLinks(newLinks);
   };
   return (
@@ -74,13 +76,13 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
             {!isCollapsed && (
               <ArrowLeft
                 className="h-5 w-5 m-auto cursor-pointer"
-                onClick={() => setIsCollapsed(true)}
+                onClick={() => setIsCollapsed && setIsCollapsed(true)}
               />
             )}
             {isCollapsed && (
               <ArrowRight
                 className="h-5 w-5 m-auto cursor-pointer"
-                onClick={() => setIsCollapsed(false)}
+                onClick={() => setIsCollapsed && setIsCollapsed(false)}
               />
             )}
           </div>

@@ -18,7 +18,7 @@ export async function doCredentialLogin(formData: formData) {
     });
     console.log("response", response);
     return response;
-  } catch (error: any) {
+  } catch (error) {
     console.log("error", error);
     return { error: "Invalid credentials" };
     // throw new Error(error);

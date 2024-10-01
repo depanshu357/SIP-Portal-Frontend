@@ -1,6 +1,3 @@
-import Credentials from "next-auth/providers/credentials";
-import { getUserByEmail } from "./data/users";
-
 
 type AuthConfig = {
   session: {

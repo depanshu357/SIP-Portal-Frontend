@@ -1,13 +1,11 @@
 'use client'
 import SignUpBox from "@/components/SignUpBox"
-import { Snackbar } from "@mui/material";
 import Image from "next/image"
-import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { SnackbarProvider } from 'notistack';
 import { useRouter } from "next/navigation";
 
-type Props = {}
 
-const SignUp = (props: Props) => {
+const SignUp = () => {
   const router = useRouter();
   return (
 

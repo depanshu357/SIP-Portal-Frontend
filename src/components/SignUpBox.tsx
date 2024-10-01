@@ -21,10 +21,9 @@ import {
 } from "@/components/ui/input-otp"
 import { Checkbox } from "@/components/ui/checkbox"
 
-type Props = {}
 
 
-const SignUpBox = (props: Props) => {
+const SignUpBox = () => {
   const [step, setStep] = useState<number>(1)
   const [userType, setUserType] = useState('student')
   const [email, setEmail] = useState('')

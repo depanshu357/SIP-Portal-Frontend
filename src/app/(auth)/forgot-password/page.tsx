@@ -1,14 +1,11 @@
 'use client'
 import ForgotPasswordBox from "@/components/ForgotPasswordBox";
-import SignInBox from "@/components/SignInBox";
-import { Snackbar } from "@mui/material";
 import Image from "next/image"
-import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { SnackbarProvider } from 'notistack';
 import { useRouter } from "next/navigation";
 
-type Props = {}
 
-const ForgotPassword = (props: Props) => {
+const ForgotPassword = () => {
   const router = useRouter()
   return (
     <div className='min-h-screen bg-emerald-200 flex items-center justify-center h-full'>

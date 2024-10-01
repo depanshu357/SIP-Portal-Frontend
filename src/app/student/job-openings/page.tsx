@@ -1,8 +1,6 @@
 import React from 'react'
 
-type Props = {}
-
-const JobOpenings = (props: Props) => {
+const JobOpenings = () => {
   return (
     <div>JobOpenings</div>
   )
