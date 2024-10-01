@@ -258,12 +258,12 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
               </AvatarFallback>
             </Avatar>
             <div
-              className={isCollapsed ? "hidden" : "flex" + " flex flex-col "}
+              className={isCollapsed ? "hidden" : "flex" + " flex flex-col"}
             >
               <span>
                 {session?.user?.name ?? session?.user?.role ?? "User"}
               </span>
-              <span className="text-gray-500 text-sm">
+              <span className="text-black text-sm">
                 {session?.user?.email?.split("@")[0] ?? "Email"}
               </span>
             </div>
@@ -281,7 +281,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
               className={isCollapsed ? "hidden" : "block"}
             >
               Sign out
-            </span>
+            </span> 
           </span>
         </div>
       </div>
