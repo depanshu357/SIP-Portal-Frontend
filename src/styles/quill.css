@@ -1,0 +1,41 @@
+/* styles/globals.css */
+.custom-quill {
+    background-color: #A7F3D0; /* Emerald background */
+    border-radius: 12px; /* Optional: Adds rounded corners */
+    padding: 10px; /* Optional: Adds padding inside the editor */
+    padding-top: 0;
+    border: 0;
+    width: 1200px;
+    max-width: calc(100% - 20px);
+    margin: 0 auto;
+  }
+  
+  .custom-quill .ql-toolbar {
+    background-color: #A7F3D0; /* Same emerald background for the toolbar */
+    border: 0;
+  }
+
+  .custom-quill .ql-toolbar .ql-fill{
+    fill: black
+  }
+  .custom-quill .ql-toolbar .ql-stroke{
+    stroke: black;
+  }
+  .custom-quill .ql-picker-label{
+    color: black;
+  }
+  .custom-quill .ql-toolbar .ql-header .ql-fill:hover{
+    fill:lime;
+  }
+  .custom-quill .ql-toolbar .ql-header .ql-fill:active{
+    fill:darkgreen;
+  }
+  
+  .custom-quill .ql-container {
+    background-color: white; /* Editor content background to contrast the toolbar */
+    height: 400px; /* Optional: Set the editor height */
+    border-radius: 8px;
+    border: 0;
+    font-family: monospace;
+  }
+  
