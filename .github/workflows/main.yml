@@ -1,0 +1,49 @@
+name: Build Next.js App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Set the Node.js version to match your project requirements
+
+      # Cache Node.js modules to speed up subsequent builds
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run tests (optional)
+      # - name: Run tests
+      #   run: npm test
+
+      # Build the Next.js app
+      - name: Build Next.js app
+        run: npm run build
+
+      # (Optional) Run lint checks
+      # - name: Lint code
+      #   run: npm run lint
