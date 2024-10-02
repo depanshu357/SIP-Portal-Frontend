@@ -8,6 +8,7 @@ import {
   Phone,
   UserRoundPen,
 } from "lucide-react";
+import { SnackbarProvider } from "notistack";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -86,7 +87,13 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
         />
       </TooltipProvider>
       <div className="h-10 bg-emerald-200 w-full fixed top-0 right-0"></div>
-      <div className="mt-10">{children}</div>
+      <SnackbarProvider anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }} 
+          autoHideDuration={3000}>
+      <div className="pt-12 bg-emerald-50 w-full overflow-hidden p-4 h-screen overflow-y-scroll">{children}</div>
+      </SnackbarProvider>
     </div>
   );
 };

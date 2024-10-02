@@ -5,9 +5,9 @@
     padding: 10px; /* Optional: Adds padding inside the editor */
     padding-top: 0;
     border: 0;
-    width: 1200px;
-    max-width: calc(100% - 20px);
+    max-width: 1200px;
     margin: 0 auto;
+    color: black;
   }
   
   .custom-quill .ql-toolbar {
@@ -24,10 +24,11 @@
   .custom-quill .ql-picker-label{
     color: black;
   }
-  .custom-quill .ql-toolbar .ql-header .ql-fill:hover{
-    fill:lime;
+  .custom-quill .ql-toolbar .ql-fill:active{
+    fill:darkgreen;
   }
-  .custom-quill .ql-toolbar .ql-header .ql-fill:active{
+
+  .custom-quill .ql-toolbar .ql-stroke:active{
     fill:darkgreen;
   }
   
@@ -39,3 +40,27 @@
     font-family: monospace;
   }
   
+  .ql-align-center{
+    text-align: center;
+  }
+
+  /* for reading */
+  .custom-quill-for-reading .ql-toolbar{
+    height: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+  /* .custom-quill-for-reading .ql-toolbar .ql-fill{
+    fill: transparent
+  }
+  .custom-quill-for-reading .ql-toolbar .ql-stroke{
+    stroke: transparent;
+  } */
+  .custom-quill-for-reading .ql-container{
+    border: 0;
+  }
+  /* .custom-quill-for-reading{
+    border: 2px solid black
+  } */

@@ -24,7 +24,7 @@ function Toolbar() {
         <GridToolbarFilterButton />
         <GridToolbarExport />
       </div>
-      <div>
+      <div> 
         <GridToolbarQuickFilter />
       </div>
     </div>

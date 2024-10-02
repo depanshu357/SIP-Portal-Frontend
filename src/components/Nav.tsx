@@ -63,7 +63,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
     setLinks(newLinks);
   };
   return (
-    <>
+    <div className="z-40 h-full bg-emerald-200">
       {/* desktop view */}
       <div
         data-collapsed={isCollapsed}
@@ -118,7 +118,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <>
+              <div key={index}>
                 <Link
                   key={index}
                   href={link.href}
@@ -147,7 +147,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
               )} */}
                 </Link>
                 {index === breakpoint && <Separator className="my-1 bg-emerald-400" />}
-              </>
+              </div>
             )
           )}
           {/* </div> */}
@@ -292,7 +292,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
             
         </div>
       )}
-    </>
+    </div>
   );
 };
 
