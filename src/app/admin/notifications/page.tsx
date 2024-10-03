@@ -12,8 +12,11 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import Image from "next/image";
+import { ListItem } from "@mui/material";
+
+import ReactQuill from "react-quill-new";
+
 
 type Row = {
   id: string;
@@ -148,22 +151,33 @@ const AdminNotifications = () => {
                   {selectedItem.Heading}
                 </h1>
                 <div className="bg-emerald-100 p-2">
-                  {selectedItem.Recipients.map((recipient: string) => {
+                  {selectedItem.Recipients.map((recipient: string,index: number) => {
                     return (
-                      <span className="text-gray-500 m-1 p-1 text-[13px] rounded-lg bg-emerald-50">
+                      <span key={index} className="text-gray-500 m-1 p-1 text-[13px] rounded-lg bg-emerald-50">
                         {recipient}
                       </span>
                     );
                   })}
                 </div>
                 <div className="text-gray-600  h-full block overflow-y-scroll">
-                  <ReactQuillReader content={selectedItem.Content.toString()} />
+                  {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
+                  <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  />
+
                 </div>
                 {/* <div dangerouslySetInnerHTML={{ __html: selectedItem.Content }} />{" "}  */}
               </div>
             ) : (
-              <div className="text-center text-gray-500 h-full w-full flex justify-center items-center">
-                <p>Select an item to view its content</p>
+              <div className="text-center text-gray-500 h-full w-full flex justify-center items-center flex-col">
+                <h1 className="text-2xl font-bold p-5 bg-emerald-50">
+                  {"Notices"}
+                </h1>
+                <Image
+                  src="/assets/images/notice.jpg"
+                  alt="empty"
+                  width={500}
+                  height={500}
+                  />
+                  <p>Select an item to view its content</p>
               </div>
             )}
           </div>
@@ -188,9 +202,10 @@ const AdminNotifications = () => {
               {selectedItem?.Heading ?? ""}
             </h1>
             <div className="text-gray-600  h-full block overflow-y-scroll">
-              <ReactQuillReader
+              {/* <ReactQuillReader
                 content={selectedItem?.Content?.toString() ?? ""}
-              />
+              /> */}
+              <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem?.Content?.toString() ?? ""}  />
             </div>
           </Box>
         </Fade>

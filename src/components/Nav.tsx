@@ -63,7 +63,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
     setLinks(newLinks);
   };
   return (
-    <div className="z-40 h-full bg-emerald-200">
+    <div className="z-40 h-full bg-emerald-100">
       {/* desktop view */}
       <div
         data-collapsed={isCollapsed}
@@ -265,7 +265,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
               <span>
                 {session?.user?.name ?? session?.user?.role ?? "User"}
               </span>
-              <span className="text-black text-sm">
+              <span className="text-black text-[12px]">
                 {session?.user?.email?.split("@")[0] ?? "Email"}
               </span>
             </div>

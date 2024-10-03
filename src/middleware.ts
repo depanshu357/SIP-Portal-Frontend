@@ -33,16 +33,20 @@ export default auth(async function middleware(req: NextRequest) {
     }
   }
   if (isAuthenticated) {
+    const referer = req.headers.get('referer') || '/sign-in'; // Fallback to a default URL if referer is not available
     if (role === "student") {
       if (pathname.startsWith("/admin") || pathname.startsWith("/recruiter")) {
+        return NextResponse.redirect(new URL(referer, req.nextUrl));
         return NextResponse.redirect(new URL("/student/notifications", req.nextUrl));
       }
     } else if (role === "recruiter") {
       if (pathname.startsWith("/admin") || pathname.startsWith("/student")) {
+        return NextResponse.redirect(new URL(referer, req.nextUrl));
         return NextResponse.redirect(new URL("/recruiter/notifications", req.nextUrl));
       }
     } else if (role === "admin" || role === "superadmin") {
       if (pathname.startsWith("/student") || pathname.startsWith("/recruiter")) {
+        return NextResponse.redirect(new URL(referer, req.nextUrl));
         return NextResponse.redirect(new URL("/admin/admin", req.nextUrl));
       }
     }

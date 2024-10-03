@@ -47,7 +47,7 @@ const SignInBox = () => {
     //     enqueueSnackbar("Invalid credentials", { variant: "error" });
     // });
     const response = await doCredentialLogin({ email, password });
-    if (!!response.error) {
+    if (!!response?.error || !response) {
       enqueueSnackbar(response.error, { variant: "error" });
       return;
     } else {

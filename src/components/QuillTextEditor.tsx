@@ -1,9 +1,10 @@
 "use client";
 // components/QuillEditor.js
-import { useState } from "react";
+import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // import Quill styles
 import "@/styles/quill.css"; // import custom styles
+import Editor from "@/components/Editor";
 import parse from "html-react-parser";
 import { Button } from "./ui/button";
 
