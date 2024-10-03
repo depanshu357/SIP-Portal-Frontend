@@ -5,7 +5,7 @@ import axios from "axios";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ReactQuillReader } from "@/components/QuillTextEditor";
+// import { ReactQuillReader } from "@/components/QuillTextEditor";
 import { parseISO, formatDistanceToNow, max, set } from "date-fns";
 
 import Backdrop from "@mui/material/Backdrop";
@@ -16,9 +16,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { getSession, useSession } from "next-auth/react";
-import Editor from "@/components/Editor";
-import Quill from "quill";
-// import {convertHtmlToDelta} from 'node-quill-converter'
+// import ReactQuill from "react-quill-new";
 
 type Row = {
   id: string;
@@ -53,10 +51,6 @@ const style = {
 const Notifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
   const [open, setOpen] = useState(false);
-  const [range, setRange] = useState();
-  const [lastChange, setLastChange] = useState();
-  const [readOnly, setReadOnly] = useState(false);
-  const quillRef = useRef<Quill | null>(null);
   const { data: session } = useSession();
   const handleOpen = () => {
     if (window.innerWidth < 768) {
@@ -99,14 +93,6 @@ const Notifications = () => {
 
     fetchData();
   }, [session]);
-  useEffect(() => {
-    const quill = new Quill(document.createElement("div"));
-    quillRef.current = quill; // Set the ref to the Quill instance
-
-    return () => {
-      quillRef.current = null; // Cleanup on unmount
-    };
-  }, []);
   const [selectedItem, setSelectedItem] = useState<null | Row>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -118,17 +104,17 @@ const Notifications = () => {
     const relativeTime = formatDistanceToNow(date, { addSuffix: true });
     return relativeTime;
   }
-  useEffect(() => {
-    if (selectedItem && quillRef.current) {
-      const htmlContent = selectedItem.Content?.toString() ?? "";
-      const delta = quillRef.current.clipboard.convert({html:htmlContent});
-      quillRef.current.setContents(delta);
-    }
-  }, [selectedItem,quillRef.current]);
+  // useEffect(() => {
+  //   if (selectedItem && quillRef.current) {
+  //     const htmlContent = selectedItem.Content?.toString() ?? "";
+  //     const delta = quillRef.current.clipboard.convert({html:htmlContent});
+  //     quillRef.current.setContents(delta);
+  //   }
+  // }, [selectedItem,quillRef.current]);
 
-  const convertHtmlToReactComponent = (html: string) => {
-    return <div dangerouslySetInnerHTML={{ __html: html }} />;
-  };
+  // const convertHtmlToReactComponent = (html: string) => {
+  //   return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  // };
 
   return (
     <div>
@@ -158,12 +144,6 @@ const Notifications = () => {
                             m-1 rounde-lg block text-md"
                   onClick={() => {
                     handleOpen();
-                    const htmlContent = item.Content?.toString() ?? "";
-                    const delta = quillRef.current?.clipboard.convert({
-                      html: htmlContent,
-                    });
-                    console.log(delta);
-                    quillRef.current?.setContents(delta ?? []);
                     setSelectedItem(item);
                   }}
                 >
@@ -186,13 +166,18 @@ const Notifications = () => {
 
                 <div className="text-gray-600  h-full block overflow-y-scroll">
                   {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
-                    <Editor
+                    {/* <Editor
                     ref={quillRef}
                     readOnly={true}
                     onSelectionChange={setRange}
                     onTextChange={setLastChange}
-                  />
-                  
+                  /> */}
+                  {/* <ReactQuill
+                    className="custom-quill-for-reading"
+                    theme="snow"
+                    value={selectedItem.Content.toString()}
+                    readOnly={true}
+                    /> */}
                   
                 </div>
               </div>
@@ -235,7 +220,12 @@ const Notifications = () => {
               {/* <ReactQuillReader
                 content={selectedItem?.Content?.toString() ?? ""}
               /> */}
-              {convertHtmlToReactComponent(selectedItem?.Content?.toString() ?? "")}
+              {/* {convertHtmlToReactComponent(selectedItem?.Content?.toString() ?? "")} */}
+              {/* <ReactQuill
+                className="custom-quill-for-reading"
+                theme="snow"
+                value={selectedItem?.Content?.toString() ?? ""}
+              /> */}
             </div>
           </Box>
         </Fade>

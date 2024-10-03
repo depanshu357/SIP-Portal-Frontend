@@ -1,11 +1,10 @@
 "use client";
 
-import QuillTextEditor from "@/components/QuillTextEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
-import ReactQuill from "react-quill-new";
+// import ReactQuill from "react-quill-new";
 
 import CustomizedHook from "@/components/CustomizedMultiSelectAutoComplete";
 import axios from "axios";
@@ -49,7 +48,7 @@ const NoticeStudent = () => {
       <div>
         <Label className="text-lg font-bold text-black">Content</Label>
         {/* <QuillTextEditor value={value} setValue={setValue} /> */}
-        <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} />
+        {/* <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} /> */}
       </div>
       <div className="flex flex-row-reverse">
         <Button onClick={handleNoticeSubmit} className="bg-emerald-500 hover:bg-emerald-400">Create</Button>

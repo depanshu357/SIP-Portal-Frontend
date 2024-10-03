@@ -5,8 +5,7 @@ import axios from "axios";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ReactQuillReader } from "@/components/QuillTextEditor";
-import { parseISO, formatDistanceToNow, max } from "date-fns";
+import { parseISO, formatDistanceToNow } from "date-fns";
 
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -15,7 +14,7 @@ import Fade from "@mui/material/Fade";
 import Image from "next/image";
 import { ListItem } from "@mui/material";
 
-import ReactQuill from "react-quill-new";
+// import ReactQuill from "react-quill-new";
 
 
 type Row = {
@@ -68,7 +67,7 @@ const AdminNotifications = () => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_KEY}/admin/notices`
         );
-        console.log(res.data.users);
+        console.log(res.data.notices);
         const notices = await res.data.notices;
         notices.forEach((notice: Received) => {
           setRows((prev: Row[]) => [
@@ -161,7 +160,7 @@ const AdminNotifications = () => {
                 </div>
                 <div className="text-gray-600  h-full block overflow-y-scroll">
                   {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
-                  <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  />
+                  {/* <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  /> */}
 
                 </div>
                 {/* <div dangerouslySetInnerHTML={{ __html: selectedItem.Content }} />{" "}  */}
@@ -205,7 +204,8 @@ const AdminNotifications = () => {
               {/* <ReactQuillReader
                 content={selectedItem?.Content?.toString() ?? ""}
               /> */}
-              <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem?.Content?.toString() ?? ""}  />
+              {"hello"}
+              {/* <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem?.Content?.toString() ?? ""}  /> */}
             </div>
           </Box>
         </Fade>
