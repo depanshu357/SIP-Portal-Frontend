@@ -1,14 +1,18 @@
-import RecruiterSidebar from '@/components/Sidebar/RecruiterSidebar'
-import { SessionProvider } from 'next-auth/react'
+import RecruiterSidebar from "@/components/Sidebar/RecruiterSidebar";
+import { MantineProvider } from "@mantine/core";
+import { SessionProvider } from "next-auth/react";
 
-const layout = ({ children }: { children: React.ReactNode }, session: any): React.ReactNode => {
+const layout = (
+  { children }: { children: React.ReactNode },
+  session: any
+): React.ReactNode => {
   return (
     <SessionProvider session={session}>
-      <RecruiterSidebar >
-        {children}
-      </RecruiterSidebar >
+      <MantineProvider>
+        <RecruiterSidebar>{children}</RecruiterSidebar>
+      </MantineProvider>
     </SessionProvider>
-  )
-}
+  );
+};
 
-export default layout
+export default layout;

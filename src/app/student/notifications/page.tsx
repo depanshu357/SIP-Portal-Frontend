@@ -5,7 +5,7 @@ import axios from "axios";
 import { ChevronsLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { parseISO, formatDistanceToNow, max, set } from "date-fns";
+import { parseISO, formatDistanceToNow} from "date-fns";
 
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -26,20 +26,6 @@ type Received = {
   CreatedAt: string;
 };
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  maxWidth: "98vw",
-  bgcolor: "background.paper",
-  // border: "2px solid #000",
-  border: "0px",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 1,
-};
 
 const Notifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
@@ -153,15 +139,7 @@ const Notifications = () => {
                   <span className="text-emerald-500 md:hidden" onClick={handleClose}><ChevronsLeft /></span>
                   {selectedItem.Heading}
                 </h1>
-                <div className="bg-emerald-100 p-2">
-                  {selectedItem.Recipients.map((recipient: string,index: number) => {
-                    return (
-                      <span key={index} className="text-gray-500 m-1 p-1 text-[13px] rounded-lg bg-emerald-50">
-                        {recipient}
-                      </span>
-                    );
-                  })}
-                </div>
+                
                 <div className="text-gray-600 block">
                   {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
                   {/* <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  /> */}
