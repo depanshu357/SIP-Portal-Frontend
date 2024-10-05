@@ -1,31 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Search } from "lucide-react";
+import { ChevronsLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-// import { ReactQuillReader } from "@/components/QuillTextEditor";
 import { parseISO, formatDistanceToNow, max, set } from "date-fns";
 
-import Backdrop from "@mui/material/Backdrop";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { getSession, useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
-// import ReactQuill from "react-quill-new";
-// const ReactQuill = typeof window === 'object' ? require('react-quill-new') : () => false;
-// const QuillNoSSRWrapper = dynamic(
-//   import('react-quill-new'),
-//   {
-//     ssr: false,
-//     loading: () => <p>Loading...</p>,
-//   }
-// );
+import { useSession } from "next-auth/react";
+import RichTextReader from "@/components/RichTextReader";
 
 type Row = {
   id: string;
@@ -61,8 +45,9 @@ const Notifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
+  const [isMobileView,setIsMobileView] = useState(true);
   const handleOpen = () => {
-    if (window.innerWidth < 768) {
+    if (isMobileView) {
       setOpen(true);
     } else {
       setOpen(false);
@@ -71,6 +56,12 @@ const Notifications = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    if(typeof window === 'undefined') return;
+    return () => {
+      setIsMobileView(window.innerWidth < 768);
+    }
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,22 +104,11 @@ const Notifications = () => {
     const relativeTime = formatDistanceToNow(date, { addSuffix: true });
     return relativeTime;
   }
-  // useEffect(() => {
-  //   if (selectedItem && quillRef.current) {
-  //     const htmlContent = selectedItem.Content?.toString() ?? "";
-  //     const delta = quillRef.current.clipboard.convert({html:htmlContent});
-  //     quillRef.current.setContents(delta);
-  //   }
-  // }, [selectedItem,quillRef.current]);
-
-  // const convertHtmlToReactComponent = (html: string) => {
-  //   return <div dangerouslySetInnerHTML={{ __html: html }} />;
-  // };
 
   return (
     <div>
       <div className="mt-4 rounded-md shadow-lg bg-white max-w-[1200px] mx-auto max-h-[88vh] h-[800px] p-4 flex flex-row">
-        <div className="box-border left md:w-2/6 w-full h-full rounded-l-md border-y-2 border-l-2 border-gray relative overflow-hidden">
+      {!(isMobileView && open) && <div className="box-border left md:w-2/6 w-full h-full rounded-l-md border-y-2 border-l-2 border-gray relative overflow-hidden">
           <div className="sticky top-0 bg-white p-4 border-b border-emerald-200 z-[15]">
             <div className="relative bg-white ">
               <Search
@@ -152,8 +132,8 @@ const Notifications = () => {
                   className="p-2 emerald-50 hover:bg-emerald-50 cursor-pointer transition duration-150 ease-in-out
                             m-1 rounde-lg block text-md"
                   onClick={() => {
-                    handleOpen();
                     setSelectedItem(item);
+                    handleOpen();
                   }}
                 >
                   {item.Heading}
@@ -164,30 +144,28 @@ const Notifications = () => {
               ))}
             </ul>
           </ScrollArea>
-        </div>
-        <div className="box-border right  w-4/6 hidden md:block h-full rounded-r-md border-2 border-gray overflow-hidden">
+        </div>}
+        {(!isMobileView || open) && <div className="box-border right md:w-4/6 md:block w-full h-full rounded-r-md border-2 border-gray overflow-hidden">
           <div className="h-full">
             {selectedItem ? (
               <div className="h-full">
-                <h1 className="text-2xl font-bold p-5 bg-emerald-50">
+                <h1 className="text-2xl font-bold p-5 bg-emerald-50 flex flex-row items-center gap-2">
+                  <span className="text-emerald-500 md:hidden" onClick={handleClose}><ChevronsLeft /></span>
                   {selectedItem.Heading}
                 </h1>
-
-                <div className="text-gray-600  h-full block overflow-y-scroll">
+                <div className="bg-emerald-100 p-2">
+                  {selectedItem.Recipients.map((recipient: string,index: number) => {
+                    return (
+                      <span key={index} className="text-gray-500 m-1 p-1 text-[13px] rounded-lg bg-emerald-50">
+                        {recipient}
+                      </span>
+                    );
+                  })}
+                </div>
+                <div className="text-gray-600 block">
                   {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
-                    {/* <Editor
-                    ref={quillRef}
-                    readOnly={true}
-                    onSelectionChange={setRange}
-                    onTextChange={setLastChange}
-                  /> */}
-                  {/* <QuillNoSSRWrapper
-                    className="custom-quill-for-reading"
-                    theme="snow"
-                    value={selectedItem.Content.toString()}
-                    readOnly={true}
-                    /> */}
-                  
+                  {/* <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  /> */}
+                  <RichTextReader key={selectedItem?.id} value={selectedItem?.Content?.toString() ?? ""} />
                 </div>
               </div>
             ) : (
@@ -200,45 +178,13 @@ const Notifications = () => {
                   alt="empty"
                   width={500}
                   height={500}
-                />
-                <p>Select an item to view its contents</p>
+                  />
+                  <p>Select an item to view its content</p>
               </div>
             )}
           </div>
-        </div>
+        </div>}
       </div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style}>
-            <h1 className="text-2xl font-bold p-5 bg-emerald-50">
-              {selectedItem?.Heading ?? ""}
-            </h1>
-            <div className="text-gray-600  h-full block overflow-y-scroll">
-              {/* <ReactQuillReader
-                content={selectedItem?.Content?.toString() ?? ""}
-              /> */}
-              {/* {convertHtmlToReactComponent(selectedItem?.Content?.toString() ?? "")} */}
-              {/* <ReactQuill
-                className="custom-quill-for-reading"
-                theme="snow"
-                value={selectedItem?.Content?.toString() ?? ""}
-              /> */}
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
     </div>
   );
 };

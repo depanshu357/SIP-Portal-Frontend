@@ -1,7 +1,7 @@
 "use client";
 
 import Nav from "@/components/Nav";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bell,
   FileBox,
@@ -75,6 +75,24 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
       href: "/recruiter/contact-us",
     },
   ]);
+  useEffect(() => {
+    const Intiate = () => {
+      const pathname = window.location.pathname;
+      setLinks((prev) =>
+        prev.map((link) => {
+          if (link.href === pathname) {
+            return { ...link, variant: "default" };
+          } else {
+            return { ...link, variant: "ghost" };
+          }
+        })
+      );
+    }
+    
+    return () => {
+      Intiate()
+    }
+  }, [])
   return (
     <div className="flex flex-row bg-white">
       <TooltipProvider>

@@ -51,8 +51,7 @@ const style = {
 const AdminNotifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
   const [open, setOpen] = useState(false);
-  const [isMobileView,setIsMobileView] = useState(false);
-  const [windowWidth,setWindowWidth] = useState(1200);
+  const [isMobileView,setIsMobileView] = useState(true);
   const handleOpen = () => {
     if (isMobileView) {
       setOpen(true);
@@ -66,7 +65,6 @@ const AdminNotifications = () => {
   useEffect(() => {
     if(typeof window === 'undefined') return;
     return () => {
-      setWindowWidth(window.innerWidth);
       setIsMobileView(window.innerWidth < 768);
     }
   }, [])
