@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import CustomizedHook from "@/components/CustomizedMultiSelectAutoComplete";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import RichTextEditor from '@/components/RichTextEditor';
 
 const NoticeStudent = () => {
   const [value, setValue] = useState("");
@@ -49,6 +50,7 @@ const NoticeStudent = () => {
         <Label className="text-lg font-bold text-black">Content</Label>
         {/* <QuillTextEditor value={value} setValue={setValue} /> */}
         {/* <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} /> */}
+        <RichTextEditor value={value} setValue={setValue}/>
       </div>
       <div className="flex flex-row-reverse">
         <Button onClick={handleNoticeSubmit} className="bg-emerald-500 hover:bg-emerald-400">Create</Button>

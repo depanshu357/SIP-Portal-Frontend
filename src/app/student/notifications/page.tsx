@@ -16,7 +16,16 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { getSession, useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 // import ReactQuill from "react-quill-new";
+// const ReactQuill = typeof window === 'object' ? require('react-quill-new') : () => false;
+// const QuillNoSSRWrapper = dynamic(
+//   import('react-quill-new'),
+//   {
+//     ssr: false,
+//     loading: () => <p>Loading...</p>,
+//   }
+// );
 
 type Row = {
   id: string;
@@ -172,7 +181,7 @@ const Notifications = () => {
                     onSelectionChange={setRange}
                     onTextChange={setLastChange}
                   /> */}
-                  {/* <ReactQuill
+                  {/* <QuillNoSSRWrapper
                     className="custom-quill-for-reading"
                     theme="snow"
                     value={selectedItem.Content.toString()}
