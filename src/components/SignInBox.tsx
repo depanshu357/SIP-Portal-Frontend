@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { doCredentialLogin } from "@/app/actions";
-type UserType = "student" | "recruiter" | "admin";
 
 
 const SignInBox = () => {
@@ -34,18 +33,6 @@ const SignInBox = () => {
 
   const handleLogIn = async () => {
     console.log(email, password);
-    // axios
-    // .post(`${process.env.NEXT_PUBLIC_API_KEY}/log-in`, {
-    //     email,
-    //     password,
-    // }).then((response) => {
-    //     if (response.status === 200) {
-    //         enqueueSnackbar("Logged in successfully", { variant: "success" });
-    //         router.push("/student/home");
-    //     }
-    // }).catch((error) => {
-    //     enqueueSnackbar("Invalid credentials", { variant: "error" });
-    // });
     const response = await doCredentialLogin({ email, password });
     if (!!response?.error || !response) {
       enqueueSnackbar(response.error, { variant: "error" });
@@ -78,6 +65,7 @@ const SignInBox = () => {
                     placeholder="student@iitk.ac.in"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="bg-white text-black"
                   />
                 </div>
                 <div className="space-y-2">
