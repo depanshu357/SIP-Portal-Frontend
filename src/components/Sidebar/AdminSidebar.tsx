@@ -5,7 +5,7 @@ import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 
 import Nav from "@/components/Nav";
-import { EventContext } from "@/app/admin/layout";
+import { EventContext } from "@/contexts/eventContext";
 import { Bell, Calendar, DoorOpen, FileText, LayoutList } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";

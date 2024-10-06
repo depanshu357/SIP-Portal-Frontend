@@ -4,21 +4,16 @@ import AdminSidebar from "@/components/Sidebar/AdminSidebar";
 import { SessionProvider } from "next-auth/react";
 import { MantineProvider } from "@mantine/core";
 import { createContext, useContext, useState } from "react";
+import { EventContext } from "@/contexts/eventContext";
 
-interface EventContextType {
-  event: string;
-  setEvent: React.Dispatch<React.SetStateAction<string>>;
+interface LayoutProps {
+  children: React.ReactNode;
 }
 
-export const EventContext = createContext<EventContextType | null>(null);
-
-const layout = (
-  { children }: { children: React.ReactNode },
-  session: any
-): React.ReactNode => {
-  const [event, setEvent] = useState("");
+const layout = ({ children}: LayoutProps): React.ReactNode => {
+  const [event, setEvent] = useState<string>("");
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <MantineProvider>
         <EventContext.Provider value={{ event, setEvent }}>
           <AdminSidebar>{children}</AdminSidebar>

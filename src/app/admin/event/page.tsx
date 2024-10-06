@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation"
 
-import { EventContext } from "@/app/admin/layout";
+import { EventContext } from "@/contexts/eventContext";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,12 @@ function formatRelativeTime(dateString: string): string {
   return relativeTime;
 }
 
+import { EventContextType } from "@/contexts/eventContext";
+
+
 const AdminEvent = () => {
   const [rows, setRows] = useState<Array<RowEvent>>([]);
-  const eventContext = useContext(EventContext);
+  const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
   const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
   useEffect(() => {
