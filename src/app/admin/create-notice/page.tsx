@@ -17,6 +17,10 @@ const NoticeStudent = () => {
   const [recipients, setRecipients] = useState<Array<string>>([]);
   const handleNoticeSubmit = () => {
     console.log(recipients, heading, value);
+    if(recipients.length === 0 || heading === "" || value=== "") {
+      enqueueSnackbar("Please fill all the fields", { variant: "error" });
+      return;
+    }
     axios.
     post(`${process.env.NEXT_PUBLIC_API_KEY}/admin/create-notice`, {
       recipients: recipients,

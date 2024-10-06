@@ -141,8 +141,6 @@ const Notifications = () => {
                 </h1>
                 
                 <div className="text-gray-600 block">
-                  {/* <ReactQuillReader content={selectedItem.Content.toString()} /> */}
-                  {/* <ReactQuill className="custom-quill-for-reading" theme="snow" value={selectedItem.Content.toString()}  /> */}
                   <RichTextReader key={selectedItem?.id} value={selectedItem?.Content?.toString() ?? ""} />
                 </div>
               </div>

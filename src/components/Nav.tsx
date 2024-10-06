@@ -1,11 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  LogOut,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, LogOut } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -17,7 +13,7 @@ import {
 import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 interface NavProps {
   isCollapsed: boolean;
   setIsCollapsed?: (isCollapsed: boolean) => void;
@@ -29,35 +25,38 @@ interface NavProps {
     href: string;
   }[];
   setLinks?: (links: []) => void;
-  breakpoint?: number
+  breakpoint?: number;
 }
 
-const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavProps & { setLinks?: (links: { title: string; label?: string; icon: any; variant: "default" | "ghost"; href: string; }[]) => void }) => {
+type LinkType = {
+  title: string;
+  label?: string;
+  icon: any;
+  variant: "default" | "ghost";
+  href: string;
+  isForEvent?: boolean;
+};
+
+const Nav = ({
+  links,
+  isCollapsed,
+  setLinks,
+  setIsCollapsed,
+  breakpoint,
+}: NavProps & { setLinks?: (links: LinkType[]) => void }) => {
   const { data: session } = useSession();
   const [isNavOpen, setIsNavOpen] = useState(false);
+  
   const handleLinkClick = (index: number) => {
-    console.log("clicked", index);
-    // links.forEach((link, i) => {
-    //   if (i === index) {
-    //     links[i].variant = "default";
-    //   } else {
-    //     links[i].variant = "ghost";
-    //   }
-    // });
-    const newLinks:{
-      title: string;
-      label?: string;
-      icon: any;
-      variant: "default" | "ghost";
-      href: string;
-    }[] = links?.map((link, i) => {
-      if (i === index) {
-        link.variant = "default";
-      } else {
-        link.variant = "ghost";
-      }
-      return link;
-    }) ?? [];
+    const newLinks: LinkType[] =
+      links?.map((link, i) => {
+        if (i === index) {
+          link.variant = "default";
+        } else {
+          link.variant = "ghost";
+        }
+        return link;
+      }) ?? [];
     if (newLinks === undefined) return;
     if (setLinks === undefined) return;
     setLinks(newLinks);
@@ -110,11 +109,6 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                   className="flex items-center gap-4"
                 >
                   {link.title}
-                  {/* {link.label && (
-                  <span className="ml-auto text-muted-foreground">
-                    {link.label}
-                  </span>
-                )} */}
                 </TooltipContent>
               </Tooltip>
             ) : (
@@ -134,19 +128,10 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                 >
                   <link.icon className="h-4 w-4" />
                   {link.title}
-                  {/* {link.label && (
-                <span
-                  className={cn(
-                    "ml-auto w-[60px]",
-                    link.variant === "default" &&
-                      "text-background dark:text-white"
-                  )}
-                >
-                  {link.label}
-                </span>
-              )} */}
                 </Link>
-                {index === breakpoint && <Separator className="my-1 bg-emerald-400" />}
+                {index === breakpoint && (
+                  <Separator className="my-1 bg-emerald-400" />
+                )}
               </div>
             )
           )}
@@ -179,7 +164,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                 {session?.user?.name ?? session?.user?.role ?? "User"}
               </span>
               <span className="text-gray-500 text-sm">
-                {session?.user?.email?.split('@')[0] ?? "Email"}
+                {session?.user?.email?.split("@")[0] ?? "Email"}
               </span>
             </div>
           </div>
@@ -187,23 +172,25 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
             className={
               "cursor-pointer hover:bg-white flex flex-row p-2 gap-2 rounded-md"
             }
-            onClick={() =>
-                signOut({ redirect: true, callbackUrl: "/sign-in" })
-              }
+            onClick={() => signOut({ redirect: true, callbackUrl: "/sign-in" })}
           >
             <LogOut className="h-5 w-5" />
-            <span
-              
-              className={isCollapsed ? "hidden" : "block"}
-            >
-              Sign out
-            </span>
+            <span className={isCollapsed ? "hidden" : "block"}>Sign out</span>
           </span>
         </div>
       </div>
       {/* mobile view */}
-      {!isNavOpen && <ArrowRight className="visible md:hidden h-5 w-5 m-auto cursor-pointer absolute top-2 left-2 z-20 text-emerald-600" onClick={() => setIsNavOpen(true)}/>}
-      <div className={`${!isNavOpen ? "-translate-x-full" : ""} ease-in-out duration-500 absolute z-40 shadow-md md:hidden flex flex-col justify-between gap-4 py-2 align-b h-screen bg-emerald-200 `}>
+      {!isNavOpen && (
+        <ArrowRight
+          className="visible md:hidden h-5 w-5 m-auto cursor-pointer absolute top-2 left-2 z-20 text-emerald-600"
+          onClick={() => setIsNavOpen(true)}
+        />
+      )}
+      <div
+        className={`${
+          !isNavOpen ? "-translate-x-full" : ""
+        } ease-in-out duration-500 absolute z-40 shadow-md md:hidden flex flex-col justify-between gap-4 py-2 align-b h-screen bg-emerald-200 `}
+      >
         <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
           {/* <div> */}
           <div className="text-emerald-600 font-bold text-xl flex justify-center">
@@ -259,9 +246,7 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
                   }) ?? "SIP"}
               </AvatarFallback>
             </Avatar>
-            <div
-              className={isCollapsed ? "hidden" : "flex" + " flex flex-col"}
-            >
+            <div className={isCollapsed ? "hidden" : "flex" + " flex flex-col"}>
               <span>
                 {session?.user?.name ?? session?.user?.role ?? "User"}
               </span>
@@ -283,14 +268,15 @@ const Nav = ({ links, isCollapsed, setLinks, setIsCollapsed, breakpoint }: NavPr
               className={isCollapsed ? "hidden" : "block"}
             >
               Sign out
-            </span> 
+            </span>
           </span>
         </div>
       </div>
       {isNavOpen && (
-        <div className="visible md:hidden w-screen h-screen bg-gray-600 bg-opacity-25 absolute z-30" onClick={() => setIsNavOpen(false)}>
-            
-        </div>
+        <div
+          className="visible md:hidden w-screen h-screen bg-gray-600 bg-opacity-25 absolute z-30"
+          onClick={() => setIsNavOpen(false)}
+        ></div>
       )}
     </div>
   );
