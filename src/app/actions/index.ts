@@ -10,13 +10,13 @@ type formData = {
 
 export async function doCredentialLogin(formData: formData) {
   try {
-    console.log("called", formData);
+    // console.log("called", formData);
     const response = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
       redirect: false,
     });
-    console.log("response", response);
+    // console.log("response", response);
     return response;
   } catch (error) {
     console.log("error", error);
@@ -26,5 +26,7 @@ export async function doCredentialLogin(formData: formData) {
 }
 
 export async function doSignOut() {
-    await signOut({ callbackUrl: "/",redirect: false });
+  await signOut({ callbackUrl: "/", redirect: false });
 }
+
+

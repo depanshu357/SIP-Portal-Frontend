@@ -18,28 +18,25 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 type RowEvent = {
-  id: string;
-  Title: string;
-  IsActive: boolean;
-  StartDate: string;
-};
-type ReceivedEvent = {
-  ID: string;
-  Title: string;
-  IsActive: boolean;
-  StartDate: string;
-};
+    id: string;
+    Title: string;
+    IsActive: boolean;
+    StartDate: string;
+  };
+  type ReceivedEvent = {
+    ID: string;
+    Title: string;
+    IsActive: boolean;
+    StartDate: string;
+  };
 
-function formatTime(dateString: string): string {
-  const date = parseISO(dateString);
-  const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
-  return relativeTime;
-}
-
-
-
-const AdminEvent = () => {
-  const [rows, setRows] = useState<Array<RowEvent>>([]);
+  function formatTime(dateString: string): string {
+    const date = parseISO(dateString);
+    const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
+    return relativeTime;
+  }
+const StudentEvent = () => {
+    const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
   const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
@@ -83,48 +80,48 @@ const AdminEvent = () => {
         if (typeof setEvent === 'function') {
           setEvent(row.Title);
         }
-        router.push('/admin/admin')
+        router.push('/student/notifications');
     }
-  const columns = [
-    { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },
-    { field: "StartDate", headerName: "Start Date", minWidth: 100, flex: 1 },
-    {
-      field: "actions",
-      headerName: "Active",
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params: { row: RowEvent }) => {
-        return (
-          <div>
-            <Switch
-              id="event-mode"
-              checked={params.row.IsActive}
-              className=" data-[state=checked]:bg-emerald-600 bg-red focus:ring-emerald-500"
-              onClick={() => {
-                handleEventChange(params.row);
-              }}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      field: "enter",
-      headerName: "Enter",
-      flex: 1,
-      minWidth: 100,
-      renderCell: (params: { row: RowEvent }) => {
-        return (
-          <Button
-            onClick={() => handleEventEnter(params.row)}
-            className="bg-emerald-600 hover:bg-emerald-500"
-          >
-            Enter
-          </Button>
-        );
-      },
-    },
-  ];
+    const columns = [
+        { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },
+        { field: "StartDate", headerName: "Start Date", minWidth: 100, flex: 1 },
+        {
+          field: "actions",
+          headerName: "Active",
+          flex: 1,
+          minWidth: 100,
+          renderCell: (params: { row: RowEvent }) => {
+            return (
+              <div>
+                <Switch
+                  id="event-mode"
+                  checked={params.row.IsActive}
+                  className=" data-[state=checked]:bg-emerald-600 bg-red focus:ring-emerald-500"
+                  onClick={() => {
+                    handleEventChange(params.row);
+                  }}
+                />
+              </div>
+            );
+          },
+        },
+        {
+          field: "enter",
+          headerName: "Enter",
+          flex: 1,
+          minWidth: 100,
+          renderCell: (params: { row: RowEvent }) => {
+            return (
+              <Button
+                onClick={() => handleEventEnter(params.row)}
+                className="bg-emerald-600 hover:bg-emerald-500"
+              >
+                Enter
+              </Button>
+            );
+          },
+        },
+      ];
   return (
     <div>
       <ThemeProvider theme={dataGridTheme}>
@@ -151,7 +148,7 @@ const AdminEvent = () => {
         />
       </ThemeProvider>
     </div>
-  );
-};
+  )
+}
 
-export default AdminEvent;
+export default StudentEvent

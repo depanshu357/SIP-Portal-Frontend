@@ -3,9 +3,9 @@
 import { useContext, useEffect, useState } from "react";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
+import { EventContext } from "@/contexts/eventContext";
 
 import Nav from "@/components/Nav";
-import { EventContext } from "@/contexts/eventContext";
 import { Bell, Calendar, DoorOpen, FileText, LayoutList } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
@@ -23,7 +23,7 @@ const WorkOutlineModifiedIcon = () => {
   );
 };
 
-type LinkType = {
+type LinkType = { 
   title: string;
   label?: string;
   icon: any;
@@ -104,15 +104,7 @@ const initialLinks: Array<LinkType> = [
     variant: "ghost",
     href: "/admin/job-openings",
     isForEvent: true,
-  },
-  // {
-  //   title: "Leave Event",
-  //   label: "",
-  //   icon: DoorOpen,
-  //   variant: "ghost",
-  //   href: "/admin/event",
-  //   isForEvent: true,
-  // }
+  }
 ];
 
 const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
