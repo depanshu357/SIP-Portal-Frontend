@@ -52,7 +52,10 @@ const RecruiterNotifications = () => {
     const fetchData = async () => {
       if (session?.user?.email) {
         try {
-          const res = await axios.get(
+          const instance = axios.create({
+            withCredentials: true,
+          })
+          const res = await instance.get(
             `${process.env.NEXT_PUBLIC_API_KEY}/recruiter/notices`,
             {
               params: {

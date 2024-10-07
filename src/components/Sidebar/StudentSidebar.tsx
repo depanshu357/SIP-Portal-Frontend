@@ -2,7 +2,7 @@
 
 import Nav from "@/components/Nav";
 import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { EventContext } from "@/contexts/eventContext";
 
 import {
@@ -59,7 +59,7 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true,
   },
   {
-    title: " Job Openings",
+    title: "Job Openings",
     label: "",
     icon: WorkOutlineModifiedIcon,
     variant: "ghost",
@@ -86,7 +86,7 @@ const initialLinks: Array<LinkType> = [
     title: "Events",
     label:"",
     icon: LayoutList,
-    variant: "ghost",
+    variant: "default",
     href: "/student/event",
     isForEvent: false
   },
@@ -131,24 +131,7 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
   const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
   const [links, setLinks] = useState<Array<LinkType>>(initialLinks);
   const router = useRouter();
-  useEffect(() => {
-    const Intiate = () => {
-      const pathname = window.location.pathname;
-      setLinks((prev) =>
-        prev.map((link) => {
-          if (link.href === pathname) {
-            return { ...link, variant: "default" };
-          } else {
-            return { ...link, variant: "ghost" };
-          }
-        })
-      );
-    }
-    
-    return () => {
-      Intiate()
-    }
-  }, [])
+  const pathname = usePathname();
   useEffect(() => {
     function handleLinks() {
       const fileteredLinks = initialLinks.filter((link) => {
@@ -158,13 +141,21 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
           return link.isForEvent === true;
         }
       });
-      setLinks(fileteredLinks);
+      setLinks(
+        fileteredLinks.map((link: LinkType) => {
+          if (link.href === pathname) {
+            return { ...link, variant: "default" };
+          } else {
+            return { ...link, variant: "ghost" };
+          }
+        })
+      );
     }
     handleLinks();
     return () => {
       handleLinks();
     };
-  }, [event]);
+  }, [event,pathname]);
   const handleEventLeave = () => {
     setEvent("");
     router.push("/student/event");

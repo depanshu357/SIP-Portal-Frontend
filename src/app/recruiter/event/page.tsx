@@ -4,9 +4,11 @@ import { EventContextType } from "@/contexts/eventContext";
 import { ThemeProvider } from "@emotion/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation"
 
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+} from "@mui/x-data-grid";
 import { dataGridTheme } from "@/theme";
 
 import { EventContext } from "@/contexts/eventContext";
@@ -16,25 +18,26 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 type RowEvent = {
-  id: string;
-  Title: string;
-  IsActive: boolean;
-  StartDate: string;
-};
-type ReceivedEvent = {
-  ID: string;
-  Title: string;
-  IsActive: boolean;
-  StartDate: string;
-};
+    id: string;
+    Title: string;
+    IsActive: boolean;
+    StartDate: string;
+  };
+  type ReceivedEvent = {
+    ID: string;
+    Title: string;
+    IsActive: boolean;
+    StartDate: string;
+  };
 
-function formatTime(dateString: string): string {
-  const date = parseISO(dateString);
-  const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
-  return relativeTime;
-}
-const StudentEvent = () => {
-  const [rows, setRows] = useState<Array<RowEvent>>([]);
+  
+  function formatTime(dateString: string): string {
+    const date = parseISO(dateString);
+    const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
+    return relativeTime;
+  }
+const RecruiterEvent = () => {
+    const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
   const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext
@@ -80,7 +83,7 @@ const StudentEvent = () => {
     if (typeof setEvent === "function") {
       setEvent(row.Title);
     }
-    router.push("/student/notifications");
+    router.push("/recruiter/notifications");
   };
   const columns = [
     { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },
@@ -128,7 +131,7 @@ const StudentEvent = () => {
         />
       </ThemeProvider>
     </div>
-  );
-};
+  )
+}
 
-export default StudentEvent;
+export default RecruiterEvent

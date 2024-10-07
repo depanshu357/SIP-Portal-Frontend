@@ -1,4 +1,5 @@
 "use server";
+import {cookies} from 'next/headers'
 
 import { signIn } from "@/auth";
 import { signOut } from "next-auth/react";
@@ -29,4 +30,6 @@ export async function doSignOut() {
   await signOut({ callbackUrl: "/", redirect: false });
 }
 
-
+export const handleCookieDelete = () => {
+  cookies().delete("Authorization");
+}

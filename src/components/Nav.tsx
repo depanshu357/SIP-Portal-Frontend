@@ -14,6 +14,8 @@ import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { cookies } from "next/headers";
+import { handleCookieDelete } from "@/app/actions";
 interface NavProps {
   isCollapsed: boolean;
   setIsCollapsed?: (isCollapsed: boolean) => void;
@@ -172,7 +174,10 @@ const Nav = ({
             className={
               "cursor-pointer hover:bg-white flex flex-row p-2 gap-2 rounded-md"
             }
-            onClick={() => signOut({ redirect: true, callbackUrl: "/sign-in" })}
+            onClick={() => {
+              handleCookieDelete();
+              signOut({ redirect: true, callbackUrl: "/sign-in" })
+            }}
           >
             <LogOut className="h-5 w-5" />
             <span className={isCollapsed ? "hidden" : "block"}>Sign out</span>

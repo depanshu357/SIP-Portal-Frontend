@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { EventContext } from "@/contexts/eventContext";
 
 import Nav from "@/components/Nav";
@@ -114,24 +114,7 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
   const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
   const [links, setLinks] = useState<Array<LinkType>>(initialLinks);
   const router = useRouter();
-  useEffect(() => {
-    const Intiate = () => {
-      const pathname = window.location.pathname;
-      setLinks((prev) =>
-        prev.map((link) => {
-          if (link.href === pathname) {
-            return { ...link, variant: "default" };
-          } else {
-            return { ...link, variant: "ghost" };
-          }
-        })
-      );
-    };
-
-    return () => {
-      Intiate();
-    };
-  }, []);
+  const pathname = usePathname();
   useEffect(() => {
     function handleLinks() {
       const fileteredLinks = initialLinks.filter((link) => {
@@ -141,13 +124,21 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
           return link.isForEvent === true;
         }
       });
-      setLinks(fileteredLinks);
+      setLinks(
+        fileteredLinks.map((link: LinkType) => {
+          if (link.href === pathname) {
+            return { ...link, variant: "default" };
+          } else {
+            return { ...link, variant: "ghost" };
+          }
+        })
+      );
     }
     handleLinks();
     return () => {
       handleLinks();
     };
-  }, [event]);
+  }, [event,pathname]);
   const handleEventLeave = () => {
     setEvent("");
     router.push("/admin/event");

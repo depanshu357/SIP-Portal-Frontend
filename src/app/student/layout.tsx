@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import StudentSidebar from "@/components/Sidebar/StudentSidebar";
 import { EventContext } from "@/contexts/eventContext";
@@ -14,11 +14,11 @@ const layout = ({
   const [event, setEvent] = useState<string>("");
   return (
     <SessionProvider>
-      <EventContext.Provider value={{event,setEvent}}>
-        <MantineProvider>
+      <MantineProvider>
+        <EventContext.Provider value={{ event, setEvent }}>
           <StudentSidebar>{children}</StudentSidebar>
-        </MantineProvider>
-      </EventContext.Provider>
+        </EventContext.Provider>
+      </MantineProvider>
     </SessionProvider>
   );
 };

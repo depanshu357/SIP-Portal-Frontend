@@ -79,16 +79,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 const parseAndGetCookie = (cookies: string[]) => {
   let authorizationToken:string = '';
   if (cookies && cookies.length > 0) {
-    // Loop through the cookies to find the Authorization cookie
     cookies.forEach((cookie) => {
-      // Check if this cookie starts with "Authorization="
       if (cookie.startsWith("Authorization=")) {
-        // Split the string to get the value after "Authorization="
         authorizationToken = cookie.split(";")[0].split("=")[1]; // First split by ";" then by "="
       }
     });
   }
-  console.log("authorizationToken", authorizationToken);
-
   return authorizationToken;
 };
