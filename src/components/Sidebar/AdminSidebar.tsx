@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { usePathname, useRouter } from "next/navigation";
 import { EventContext } from "@/contexts/eventContext";
+import { EventDefault, EventType } from "@/types/custom_types";
 
 import Nav from "@/components/Nav";
 import { Bell, Calendar, DoorOpen, FileText, LayoutList } from "lucide-react";
@@ -13,7 +14,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 const WorkOutlineModifiedIcon = () => {
   return (
@@ -23,7 +24,7 @@ const WorkOutlineModifiedIcon = () => {
   );
 };
 
-type LinkType = { 
+type LinkType = {
   title: string;
   label?: string;
   icon: any;
@@ -104,45 +105,75 @@ const initialLinks: Array<LinkType> = [
     variant: "ghost",
     href: "/admin/job-openings",
     isForEvent: true,
-  }
+  },
 ];
 
 const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const eventContext = useContext(EventContext);
-  const event = eventContext ? eventContext.event : "";
-  const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
+  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext
+    ? eventContext.setEvent
+    : () => EventDefault;
   const [links, setLinks] = useState<Array<LinkType>>(initialLinks);
   const router = useRouter();
   const pathname = usePathname();
   useEffect(() => {
     function handleLinks() {
-      const fileteredLinks = initialLinks.filter((link) => {
-        if (event === "") {
-          return link.isForEvent === false;
-        } else {
-          return link.isForEvent === true;
+      let isForEvent: boolean = false;
+      initialLinks.forEach((link: LinkType) => {
+        if (link.href === pathname) {
+          isForEvent = link.isForEvent ?? false;
         }
       });
-      setLinks(
-        fileteredLinks.map((link: LinkType) => {
-          if (link.href === pathname) {
-            return { ...link, variant: "default" };
-          } else {
-            return { ...link, variant: "ghost" };
-          }
-        })
-      );
+      const fileteredLinks = initialLinks.filter((link) => {
+        return link.isForEvent === isForEvent;
+      });
+      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+        if (link.href === pathname) {
+          return { ...link, variant: "default" };
+        } else {
+          return { ...link, variant: "ghost" };
+        }
+      });
+      setLinks(finalLinks);
     }
     handleLinks();
     return () => {
       handleLinks();
     };
-  }, [event,pathname]);
+  }, [event, pathname]);
+  useEffect(() => {
+    function handleLinks() {
+      let isForEvent: boolean = false;
+      initialLinks.forEach((link: LinkType) => {
+        if (link.href === pathname) {
+          isForEvent = link.isForEvent ?? false;
+        }
+      });
+      const fileteredLinks = initialLinks.filter((link) => {
+        return link.isForEvent === isForEvent;
+      });
+      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+        if (link.href === pathname) {
+          return { ...link, variant: "default" };
+        } else {
+          return { ...link, variant: "ghost" };
+        }
+      });
+      setLinks(finalLinks);
+    }
+    return () => {
+      if (event.Title === "") {
+        router.push("/admin/event");
+      }
+      handleLinks();
+    };
+  }, []);
   const handleEventLeave = () => {
-    setEvent("");
+    setEvent(EventDefault);
     router.push("/admin/event");
-  }
+  };
   return (
     <div className="flex flex-row bg-white">
       <TooltipProvider>
@@ -155,8 +186,12 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
         />
       </TooltipProvider>
       <div className="h-10 bg-emerald-200 w-full fixed top-0 right-0 z-20 flex flex-row-reverse gap-2 items-center px-2">
-        {event!=="" && <span className="cursor-pointer" onClick={handleEventLeave}><ExitToAppIcon /></span>}
-        {event}
+        {event.Title !== "" && (
+          <span className="cursor-pointer" onClick={handleEventLeave}>
+            <ExitToAppIcon />
+          </span>
+        )}
+        {event.Title}
       </div>
       <SnackbarProvider
         anchorOrigin={{

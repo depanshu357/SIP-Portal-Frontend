@@ -12,11 +12,13 @@ import { DatePicker } from "@mui/x-date-pickers";
 const CreateEvent = () => {
   const [title, setTitle] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
+  const [academicYear, setAcademicYear] = useState("");
   const handleCreateEvent = async () => {
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_KEY}/admin/create-event`, {
         title: title,
         start_date: startDate,
+        academic_year: academicYear,
       })
       .then((res) => {
         console.log(res.data);
@@ -70,6 +72,16 @@ const CreateEvent = () => {
           }}
           value={startDate}
           onChange={setStartDate}
+        />
+      </div>
+      <div>
+        <Label className="text-lg font-bold text-black">Academic Year</Label>
+        <Input
+          placeholder="eg. 2024-25"
+          type="text"
+          className="mx-auto border-emerald-500 bg-white"
+          value={academicYear}
+          onChange={(e) => setAcademicYear(e.target.value)}
         />
       </div>
       <div className="flex flex-row-reverse">

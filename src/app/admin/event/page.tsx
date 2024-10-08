@@ -5,29 +5,32 @@ import { ThemeProvider } from "@emotion/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import {useRouter} from "next/navigation"
+import { EventContext } from "@/contexts/eventContext";
+import {EventType, EventDefault} from "@/types/custom_types";
 
 import {
   DataGrid,
 } from "@mui/x-data-grid";
 import { dataGridTheme } from "@/theme";
-
-import { EventContext } from "@/contexts/eventContext";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { enqueueSnackbar } from "notistack";
 
 type RowEvent = {
   id: string;
   Title: string;
   IsActive: boolean;
   StartDate: string;
+  AcademicYear: string;
 };
 type ReceivedEvent = {
   ID: string;
   Title: string;
   IsActive: boolean;
   StartDate: string;
+  AcademicYear: string;
 };
 
 function formatTime(dateString: string): string {
@@ -37,12 +40,11 @@ function formatTime(dateString: string): string {
 }
 
 
-
 const AdminEvent = () => {
   const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
-  const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
+  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext ? eventContext.setEvent : () => {};
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,14 +53,15 @@ const AdminEvent = () => {
         );
         // console.log(res.data.events);
         const events = await res.data.events;
-        events.forEach((user: ReceivedEvent) => {
+        events.forEach((event: ReceivedEvent) => {
           setRows((prev: RowEvent[]) => [
             ...prev,
             {
-              id: user.ID,
-              Title: user.Title,
-              IsActive: user.IsActive,
-              StartDate: formatTime(user.StartDate),
+              id: event.ID,
+              Title: event.Title,
+              IsActive: event.IsActive,
+              StartDate: formatTime(event.StartDate),
+              AcademicYear: event.AcademicYear,
             },
           ]);
         });
@@ -78,16 +81,35 @@ const AdminEvent = () => {
         event.id === row.id ? { ...event, IsActive: !event.IsActive } : event
       )
     );
+    const authInstance = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_API_KEY,
+      withCredentials: true,
+    });
+    authInstance
+      .put(`/admin/toggle-event-activation`, {
+        id: row.id,
+        IsActive: !row.IsActive,
+      })
+      .then((res) => {
+        console.log(res.data);
+        enqueueSnackbar("Event status changed successfully", {
+          variant: "success",})
+      })
+      .catch((err) => {
+        enqueueSnackbar("Failed to change event status", {variant: "error"});
+        console.error(err);
+      });
   };
   const handleEventEnter = (row: RowEvent) => {
         if (typeof setEvent === 'function') {
-          setEvent(row.Title);
+          setEvent(row);
         }
         router.push('/admin/admin')
     }
   const columns = [
     { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },
     { field: "StartDate", headerName: "Start Date", minWidth: 100, flex: 1 },
+    { field: "AcademicYear", headerName: "Academic Year", minWidth: 100, flex: 1 },
     {
       field: "actions",
       headerName: "Active",
