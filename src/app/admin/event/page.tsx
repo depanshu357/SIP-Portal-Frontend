@@ -91,7 +91,6 @@ const AdminEvent = () => {
         IsActive: !row.IsActive,
       })
       .then((res) => {
-        console.log(res.data);
         enqueueSnackbar("Event status changed successfully", {
           variant: "success",})
       })

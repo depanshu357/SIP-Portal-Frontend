@@ -19,6 +19,7 @@ import { SnackbarProvider } from "notistack";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PolicyIcon from '@mui/icons-material/Policy';
+import { EventDefault, EventType } from "@/types/custom_types";
 
 const WorkOutlineModifiedIcon = () => {
   return (
@@ -27,10 +28,6 @@ const WorkOutlineModifiedIcon = () => {
     />
   );
 };
-
-const PolicyIconModified = () => {
-  return(<PolicyIcon sx={{width:"16",height:"16",margin:"0"}}/>)
-}
 
 type LinkType = { 
   title: string;
@@ -127,37 +124,65 @@ const initialLinks: Array<LinkType> = [
 const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const eventContext = useContext(EventContext);
-  const event = eventContext ? eventContext.event : "";
-  const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext ? eventContext.setEvent : () => {};
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
+  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext ? eventContext.setEvent : () => {};
   const [links, setLinks] = useState<Array<LinkType>>(initialLinks);
   const router = useRouter();
   const pathname = usePathname();
   useEffect(() => {
     function handleLinks() {
-      const fileteredLinks = initialLinks.filter((link) => {
-        if (event === "") {
-          return link.isForEvent === false;
-        } else {
-          return link.isForEvent === true;
+      let isForEvent: boolean = false;
+      initialLinks.forEach((link: LinkType) => {
+        if (link.href === pathname) {
+          isForEvent = link.isForEvent ?? false;
         }
       });
-      setLinks(
-        fileteredLinks.map((link: LinkType) => {
-          if (link.href === pathname) {
-            return { ...link, variant: "default" };
-          } else {
-            return { ...link, variant: "ghost" };
-          }
-        })
-      );
+      const fileteredLinks = initialLinks.filter((link) => {
+        return link.isForEvent === isForEvent;
+      });
+      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+        if (link.href === pathname) {
+          return { ...link, variant: "default" };
+        } else {
+          return { ...link, variant: "ghost" };
+        }
+      });
+      setLinks(finalLinks);
     }
     handleLinks();
     return () => {
       handleLinks();
     };
-  }, [event,pathname]);
+  }, [event, pathname]);
+  useEffect(() => {
+    function handleLinks() {
+      let isForEvent: boolean = false;
+      initialLinks.forEach((link: LinkType) => {
+        if (link.href === pathname) {
+          isForEvent = link.isForEvent ?? false;
+        }
+      });
+      const fileteredLinks = initialLinks.filter((link) => {
+        return link.isForEvent === isForEvent;
+      });
+      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+        if (link.href === pathname) {
+          return { ...link, variant: "default" };
+        } else {
+          return { ...link, variant: "ghost" };
+        }
+      });
+      setLinks(finalLinks);
+    }
+    return () => {
+      if (event.Title === "") {
+        router.push("/admin/event");
+      }
+      handleLinks();
+    };
+  }, []);
   const handleEventLeave = () => {
-    setEvent("");
+    setEvent(EventDefault);
     router.push("/student/event");
   }
   return (
@@ -172,8 +197,8 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
         />
       </TooltipProvider>
       <div className="h-10 bg-emerald-200 w-full fixed top-0 right-0 z-20 flex flex-row-reverse gap-2 items-center px-2">
-        {event!=="" && <span className="cursor-pointer" onClick={handleEventLeave}><ExitToAppIcon /></span>}
-        {event}
+        {event.Title!=="" && <span className="cursor-pointer" onClick={handleEventLeave}><ExitToAppIcon /></span>}
+        {event.Title}
       </div>
       <SnackbarProvider anchorOrigin={{
             vertical: 'top',

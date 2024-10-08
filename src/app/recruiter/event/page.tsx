@@ -16,18 +16,21 @@ import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { EventType } from "@/types/custom_types";
 
 type RowEvent = {
     id: string;
     Title: string;
     IsActive: boolean;
     StartDate: string;
+    AcademicYear: string;
   };
   type ReceivedEvent = {
     ID: string;
     Title: string;
     IsActive: boolean;
     StartDate: string;
+    AcademicYear: string;
   };
 
   
@@ -40,9 +43,8 @@ const RecruiterEvent = () => {
     const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
-  const setEvent: React.Dispatch<React.SetStateAction<string>> = eventContext
-    ? eventContext.setEvent
-    : () => {};
+  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext ? eventContext.setEvent : () => {};
+   
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,6 +61,7 @@ const RecruiterEvent = () => {
               Title: user.Title,
               IsActive: user.IsActive,
               StartDate: formatTime(user.StartDate),
+              AcademicYear: user.AcademicYear,
             },
           ]);
         });
@@ -71,17 +74,9 @@ const RecruiterEvent = () => {
       fetchData();
     };
   }, []);
-  const handleEventChange = (row: RowEvent) => {
-    console.log("Event changed");
-    setRows((prev: RowEvent[]) =>
-      prev.map((event: RowEvent) =>
-        event.id === row.id ? { ...event, IsActive: !event.IsActive } : event
-      )
-    );
-  };
   const handleEventEnter = (row: RowEvent) => {
     if (typeof setEvent === "function") {
-      setEvent(row.Title);
+      setEvent(row);
     }
     router.push("/recruiter/notifications");
   };
