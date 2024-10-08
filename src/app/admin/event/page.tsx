@@ -4,13 +4,11 @@ import { EventContextType } from "@/contexts/eventContext";
 import { ThemeProvider } from "@emotion/react";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation";
 import { EventContext } from "@/contexts/eventContext";
-import {EventType, EventDefault} from "@/types/custom_types";
+import { EventType, EventDefault } from "@/types/custom_types";
 
-import {
-  DataGrid,
-} from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { dataGridTheme } from "@/theme";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { parseISO, format } from "date-fns";
@@ -39,12 +37,13 @@ function formatTime(dateString: string): string {
   return relativeTime;
 }
 
-
 const AdminEvent = () => {
   const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
   const router = useRouter();
-  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext ? eventContext.setEvent : () => {};
+  const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext
+    ? eventContext.setEvent
+    : () => {};
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,11 +75,7 @@ const AdminEvent = () => {
   }, []);
   const handleEventChange = (row: RowEvent) => {
     console.log("Event changed");
-    setRows((prev: RowEvent[]) =>
-      prev.map((event: RowEvent) =>
-        event.id === row.id ? { ...event, IsActive: !event.IsActive } : event
-      )
-    );
+
     const authInstance = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_KEY,
       withCredentials: true,
@@ -92,23 +87,36 @@ const AdminEvent = () => {
       })
       .then((res) => {
         enqueueSnackbar("Event status changed successfully", {
-          variant: "success",})
+          variant: "success",
+        });
+        setRows((prev: RowEvent[]) =>
+          prev.map((event: RowEvent) =>
+            event.id === row.id
+              ? { ...event, IsActive: !event.IsActive }
+              : event
+          )
+        );
       })
       .catch((err) => {
-        enqueueSnackbar("Failed to change event status", {variant: "error"});
+        enqueueSnackbar("Failed to change event status", { variant: "error" });
         console.error(err);
       });
   };
   const handleEventEnter = (row: RowEvent) => {
-        if (typeof setEvent === 'function') {
-          setEvent(row);
-        }
-        router.push('/admin/admin')
+    if (typeof setEvent === "function") {
+      setEvent(row);
     }
+    router.push("/admin/admin");
+  };
   const columns = [
     { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },
     { field: "StartDate", headerName: "Start Date", minWidth: 100, flex: 1 },
-    { field: "AcademicYear", headerName: "Academic Year", minWidth: 100, flex: 1 },
+    {
+      field: "AcademicYear",
+      headerName: "Academic Year",
+      minWidth: 100,
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Active",

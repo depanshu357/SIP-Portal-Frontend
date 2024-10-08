@@ -98,3 +98,27 @@ export const theme = createTheme({
     },
   });
 
+export const profileTheme = createTheme({
+  palette: {
+    primary: {
+      main: "#808080",
+    },
+    secondary: {
+      main: "#808080",
+    },
+  },
+  typography: {
+    fontFamily: 'font-[family-name:var(--font-geist-mono)]', // Apply your custom font
+  },
+});
+
+export const inputStyle = {
+  margin: "10px",
+  width: "360px",
+};
+
+export const textFieldStyle = {
+  width: "100%",
+  backgroundColor: "#aef2d07d"
+  // maxWidth: "80vw",
+}

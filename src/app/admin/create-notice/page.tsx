@@ -3,18 +3,22 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 // import ReactQuill from "react-quill-new";
 
 import CustomizedHook from "@/components/CustomizedMultiSelectAutoComplete";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import RichTextEditor from '@/components/RichTextEditor';
+import { EventContextType, EventDefault, EventType } from "@/types/custom_types";
+import { EventContext } from "@/contexts/eventContext";
 
 const NoticeStudent = () => {
   const [value, setValue] = useState("");
   const [heading, setHeading] = useState("");
   const [recipients, setRecipients] = useState<Array<string>>([]);
+  const eventContext = useContext(EventContext) as EventContextType | null;
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
   const handleNoticeSubmit = () => {
     console.log(recipients, heading, value);
     if(recipients.length === 0 || heading === "" || value=== "") {
@@ -26,6 +30,8 @@ const NoticeStudent = () => {
       recipients: recipients,
       heading: heading,
       content: value,
+      events: event.id,
+
     }).then((res) => {
       console.log(res);
       enqueueSnackbar("Notice created successfully", { variant: "success" });
