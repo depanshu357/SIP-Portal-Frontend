@@ -8,7 +8,7 @@ export type ProfileDataType = {
     department: string;
     secondaryDepartment: string;
     specialisation: string;
-    gender: "male" | "female" | "";
+    gender: string;
     dob: string;
     alternateContactNumber: string;
     currentCPI: string;
@@ -25,7 +25,6 @@ export type ProfileDataType = {
     personalEmail: string;
     contactNumber: string;
     whatsappNumber: string;
-    CPI: string;
     twelfthBoardYear: string;
     tenthBoardYear: string;
     twelfthBoard: string;
@@ -61,7 +60,6 @@ export const defaultProfileData: ProfileDataType = {
     personalEmail: "",
     contactNumber: "",
     whatsappNumber: "",
-    CPI: "",
     twelfthBoardYear: "",
     tenthBoardYear: "",
     twelfthBoard: "",

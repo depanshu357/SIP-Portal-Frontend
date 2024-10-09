@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {useSession} from 'next-auth/react'
 
 import {
@@ -15,8 +15,48 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { branchList, ProfileDataType, defaultProfileData, programList } from '@/data/profileRealtedInfo';
 import { profileTheme,  inputStyle, textFieldStyle } from '@/theme';
+import axios from 'axios';
+import { enqueueSnackbar } from 'notistack';
 
 // import { SessionProvider } from 'next-auth/react'
+function modifyData(data: any): ProfileDataType {
+  const modifiedData = {
+    name: data.Name,
+    rollNumber: data.RollNumber,
+    email: data.Email,
+    department: data.Department,
+    secondaryDepartment: data.SecondaryDepartment,
+    specialisation: data.Specialisation,
+    gender: data.Gender,
+    dob: data.DOB,
+    contactNumber: data.ContactNumber,
+    currentCPI: data.CurrentCPI,
+    tenthBoard: data.TenthBoard,
+    tenthMarks: data.TenthMarks,
+    tenthBoardYear: data.TenthBoardYear,
+    twelfthBoard: data.TwelfthBoard,
+    twelfthMarks: data.TwelfthMarks,
+    twelfthBoardYear: data.TwelfthBoardYear,
+    entranceExam: data.EntranceExam,
+    entranceExamRank: data.EntranceExamRank,
+    category: data.Category,
+    categoryRank: data.CategoryRank,
+    disability: data.Disability,
+    currentAddress: data.CurrentAddress,
+    permanentAddress: data.PermanentAddress,
+    friendsName: data.FriendsName,
+    friendsContactDetails: data.FriendsContactDetails,
+    expectedGraduationYear: data.ExpectedGraduationYear,
+    program: data.Program,
+    secondaryProgram: data.SecondaryProgram,
+    preference: data.Preference,
+    personalEmail: data.PersonalEmail,
+    whatsappNumber: data.WhatsappNumber,
+    alternateContactNumber: data.AlternateContactNumber,
+  };
+  return modifiedData;
+}
+
 
 const Home = () => {
   const [profileData, setProfileData] = React.useState<ProfileDataType>(defaultProfileData);
@@ -26,6 +66,49 @@ const Home = () => {
     setProfileData({ ...profileData, [field]: event.target.value });
     // console.log(formData);
   };
+  useEffect(() => {
+    const intializeProfileInfo = async () => {
+      const instance = axios.create({
+        withCredentials: true,
+      })
+      await instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/student/profile-info`, {
+        params: {
+          id: session?.user?.id
+        }
+      }).then((res)=> {
+        setProfileData(res.data)
+        const data = res.data.profile
+        console.log(data)
+
+        console.log(profileData)
+        setProfileData(modifyData(data))
+      }).catch((err)=>{
+        console.log(err)
+        enqueueSnackbar("Error fetching profile data", { variant: "error" });
+      })
+    }
+  
+    return () => {
+      intializeProfileInfo()
+    }
+  }, [])
+
+  const handleProfileUpdate = async () => {
+    const instance = axios.create({
+      withCredentials: true,
+    })
+    console.log({id: session?.user?.id,                // ID from session
+      ...profileData})
+    await instance.post(`${process.env.NEXT_PUBLIC_API_KEY}/student/update-profile`, {
+      ...profileData
+    }).then((res)=> {
+      enqueueSnackbar("Profile updated successfully", { variant: "success" });
+    }).catch((err)=>{
+      console.log(err)
+      enqueueSnackbar("Error updating profile", { variant: "error" });
+    })
+  }
+  
   return (
     <div >Student Home
       <div>
@@ -98,7 +181,7 @@ const Home = () => {
               <Typography variant="body1">Department</Typography>
               <FormControl sx={textFieldStyle}>
               <Select
-                  value={profileData.department}
+                  value={profileData.department || ""}
                   onChange={handleChange("department")}
                 >
                   {branchList.map((branch) => (
@@ -111,7 +194,7 @@ const Home = () => {
               <Typography variant="body1">Secondary Department</Typography>
               <FormControl sx={textFieldStyle}>
               <Select
-                  value={profileData.secondaryDepartment}
+                  value={profileData.secondaryDepartment || ""}
                   onChange={handleChange("secondaryDepartment")}
                 >
                   {branchList.map((branch) => (
@@ -124,7 +207,7 @@ const Home = () => {
               <Typography variant="body1">Program</Typography>
               <FormControl sx={textFieldStyle}>
               <Select
-                  value={profileData.program}
+                  value={profileData.program || ""}
                   onChange={handleChange("program")}
                 >
                   {programList.map((program) => (
@@ -138,9 +221,9 @@ const Home = () => {
               <Typography variant="body1">Secondary Program</Typography>
               <FormControl sx={textFieldStyle}>
               <Select
-                  value={profileData.secondaryProgram}
+                  value={profileData.secondaryProgram || ""}
                   onChange={handleChange("secondaryProgram")}
-                >
+                > 
                   {programList.map((program) => (
                   <MenuItem value={program}>{program}</MenuItem>
 
@@ -164,12 +247,12 @@ const Home = () => {
               <Typography variant="body1">Preference</Typography>
               <FormControl sx={textFieldStyle}>
                 <Select
-                  value={profileData.preference}
+                  value={profileData.preference || ""}
                   onChange={handleChange("preference")}
 
                 >
-                  <MenuItem value="male">Industrial</MenuItem>
-                  <MenuItem value="female">Academic</MenuItem>
+                  <MenuItem value="Industrial">Industrial</MenuItem>
+                  <MenuItem value="Academic">Academic</MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -178,8 +261,9 @@ const Home = () => {
               <FormControl sx={textFieldStyle}>
                 {/* <InputLabel>Gender</InputLabel> */}
                 <Select
-                  value={profileData.gender}
+                  value={profileData.gender || ""}
                   onChange={handleChange("gender")}
+                  defaultValue='male'
                 >
                   <MenuItem value="male">Male</MenuItem>
                   <MenuItem value="female">Female</MenuItem>
@@ -432,10 +516,10 @@ const Home = () => {
             }}
           >
             <Button
-              // onClick={handleSubmit}
+              onClick={handleProfileUpdate}
               variant="contained"
               type="submit"
-              sx={{backgroundColor:"green", "&:hover": { backgroundColor: "#008000de" }}}
+              sx={{backgroundColor:"black", "&:hover": { backgroundColor: "#008000de" }}}
               // disabled={loading}
             >
               Update
