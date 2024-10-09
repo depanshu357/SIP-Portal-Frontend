@@ -68,6 +68,7 @@ const Home = () => {
   };
   useEffect(() => {
     const intializeProfileInfo = async () => {
+      if(!session) return
       const instance = axios.create({
         withCredentials: true,
       })
@@ -91,7 +92,7 @@ const Home = () => {
     return () => {
       intializeProfileInfo()
     }
-  }, [])
+  }, [session])
 
   const handleProfileUpdate = async () => {
     const instance = axios.create({
@@ -159,7 +160,7 @@ const Home = () => {
                 defaultValue=""
                 variant="filled"
                 onChange={handleChange("email")}
-                value={profileData.email}
+                value={profileData.email} 
                 sx={textFieldStyle}
                 disabled
               ></TextField>
