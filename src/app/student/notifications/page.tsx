@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ChevronsLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import { parseISO, formatDistanceToNow} from "date-fns";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import RichTextReader from "@/components/RichTextReader";
+import { EventContext } from "@/contexts/eventContext";
+import { EventDefault, EventType } from "@/types/custom_types";
 
 type Row = {
   id: string;
@@ -32,6 +34,8 @@ const Notifications = () => {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const [isMobileView,setIsMobileView] = useState(true);
+  const eventContext = useContext(EventContext);
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
   const handleOpen = () => {
     if (isMobileView) {
       setOpen(true);
@@ -51,6 +55,7 @@ const Notifications = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if(!event || !event.id) return;
       if (session?.user?.email) {
         try {
           const instance = axios.create({
@@ -60,7 +65,7 @@ const Notifications = () => {
             `${process.env.NEXT_PUBLIC_API_KEY}/student/notices`,
             {
               params: {
-                email: session.user.email || "student", // Use session email if available
+                eventId: event.id
               },
             }
           );
@@ -81,7 +86,7 @@ const Notifications = () => {
     };
 
     fetchData();
-  }, [session]);
+  }, [session,event]);
   const [selectedItem, setSelectedItem] = useState<null | Row>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
