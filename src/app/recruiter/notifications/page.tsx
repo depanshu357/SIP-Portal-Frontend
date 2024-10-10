@@ -59,7 +59,7 @@ const RecruiterNotifications = () => {
             `${process.env.NEXT_PUBLIC_API_KEY}/recruiter/notices`,
             {
               params: {
-                email: session.user.email || "student", // Use session email if available
+                email: session.user.email || "recruiter", // Use session email if available
               },
             }
           );

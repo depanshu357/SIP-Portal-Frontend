@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ChevronsLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,8 @@ import Fade from "@mui/material/Fade";
 import Image from "next/image";
 import { ListItem } from "@mui/material";
 import RichTextReader from "@/components/RichTextReader";
+import { EventContext } from "@/contexts/eventContext";
+import { EventDefault, EventType } from "@/types/custom_types";
 
 // import ReactQuill from "react-quill-new";
 
@@ -52,6 +54,8 @@ const AdminNotifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
   const [open, setOpen] = useState(false);
   const [isMobileView,setIsMobileView] = useState(true);
+  const eventContext = useContext(EventContext);
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
   const handleOpen = () => {
     if (isMobileView) {
       setOpen(true);
@@ -73,7 +77,10 @@ const AdminNotifications = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_KEY}/admin/notices`
+          `${process.env.NEXT_PUBLIC_API_KEY}/admin/notices`,
+          {params:{
+            event: event.id
+          }}
         );
         console.log(res.data.notices);
         const notices = await res.data.notices;
