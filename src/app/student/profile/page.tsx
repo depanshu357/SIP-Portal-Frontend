@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {useSession} from 'next-auth/react'
 
 import {
@@ -17,6 +17,8 @@ import { branchList, ProfileDataType, defaultProfileData, programList } from '@/
 import { profileTheme,  inputStyle, textFieldStyle } from '@/theme';
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
+import { EventDefault, EventType } from "@/types/custom_types";
+import { EventContext } from "@/contexts/eventContext";
 
 // import { SessionProvider } from 'next-auth/react'
 function modifyData(data: any): ProfileDataType {
@@ -61,6 +63,8 @@ function modifyData(data: any): ProfileDataType {
 const Home = () => {
   const [profileData, setProfileData] = React.useState<ProfileDataType>(defaultProfileData);
   const {data: session} = useSession()
+  const eventContext = useContext(EventContext);
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
   // console.log(session)
   const handleChange = (field: string) => (event: { target: { value: string; }; }) => {
     setProfileData({ ...profileData, [field]: event.target.value });
@@ -72,11 +76,7 @@ const Home = () => {
       const instance = axios.create({
         withCredentials: true,
       })
-      await instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/student/profile-info`, {
-        params: {
-          id: session?.user?.id
-        }
-      }).then((res)=> {
+      await instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/student/profile-info`).then((res)=> {
         setProfileData(res.data)
         const data = res.data.profile
         console.log(data)
@@ -145,7 +145,6 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 onChange={handleChange("name")}
                 value={profileData.name}
@@ -157,7 +156,6 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 onChange={handleChange("email")}
                 value={profileData.email} 
@@ -170,7 +168,6 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 onChange={handleChange("rollNumber")}
                 value={profileData.rollNumber}
@@ -185,8 +182,8 @@ const Home = () => {
                   value={profileData.department || ""}
                   onChange={handleChange("department")}
                 >
-                  {branchList.map((branch) => (
-                    <MenuItem value={branch}>{branch}</MenuItem>
+                  {branchList.map((branch,index) => (
+                    <MenuItem key={index} value={branch}>{branch}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -198,8 +195,8 @@ const Home = () => {
                   value={profileData.secondaryDepartment || ""}
                   onChange={handleChange("secondaryDepartment")}
                 >
-                  {branchList.map((branch) => (
-                    <MenuItem value={branch}>{branch}</MenuItem>
+                  {branchList.map((branch,index) => (
+                    <MenuItem key={index} value={branch}>{branch}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -211,8 +208,8 @@ const Home = () => {
                   value={profileData.program || ""}
                   onChange={handleChange("program")}
                 >
-                  {programList.map((program) => (
-                  <MenuItem value={program}>{program}</MenuItem>
+                  {programList.map((program,index) => (
+                  <MenuItem key={index} value={program}>{program}</MenuItem>
 
                   ))}
                 </Select>
@@ -237,7 +234,6 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 value={profileData.specialisation}
                 onChange={handleChange("specialisation")}
@@ -276,7 +272,6 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 type="date"
                 value={profileData.dob}
@@ -288,7 +283,6 @@ const Home = () => {
               <Typography variant="body1">Contact Number</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
                 variant="filled"
                 value={profileData.contactNumber}
                 onChange={handleChange("contactNumber")}
@@ -300,7 +294,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.currentCPI}
                 onChange={handleChange("currentCPI")}
@@ -312,7 +306,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.tenthBoard}
                 onChange={handleChange("tenthBoard")}
@@ -324,7 +318,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.tenthMarks}
                 onChange={handleChange("tenthMarks")}
@@ -336,7 +330,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.tenthBoardYear}
                 onChange={handleChange("tenthBoardYear")}
@@ -348,7 +342,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.twelfthBoard}
                 onChange={handleChange("twelfthBoard")}
@@ -360,7 +354,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.twelfthMarks}
                 onChange={handleChange("twelfthMarks")}
@@ -372,7 +366,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.twelfthBoardYear}
                 onChange={handleChange("twelfthBoardYear")}
@@ -384,7 +378,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.entranceExam}
                 onChange={handleChange("entranceExam")}
@@ -396,7 +390,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.entranceExamRank}
                 onChange={handleChange("entranceExamRank")}
@@ -407,7 +401,7 @@ const Home = () => {
               <Typography variant="body1">Category</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.category}
                 onChange={handleChange("category")}
@@ -418,7 +412,7 @@ const Home = () => {
               <Typography variant="body1">Category Rank</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.categoryRank}
                 onChange={handleChange("categoryRank")}
@@ -429,7 +423,7 @@ const Home = () => {
               <Typography variant="body1">Disability</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.disability}
                 onChange={handleChange("disability")}
@@ -441,7 +435,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.currentAddress}
                 onChange={handleChange("currentAddress")}
@@ -453,7 +447,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.permanentAddress}
                 onChange={handleChange("permanentAddress")}
@@ -464,7 +458,7 @@ const Home = () => {
               <Typography variant="body1">Friends Name</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.friendsName}
                 onChange={handleChange("friendsName")}
@@ -475,7 +469,7 @@ const Home = () => {
               <Typography variant="body1">Friends Contact Details</Typography>
               <TextField
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.friendsContactDetails}
                 onChange={handleChange("friendsContactDetails")}
@@ -487,7 +481,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.expectedGraduationYear}
                 onChange={handleChange("expectedGraduationYear")}
@@ -499,7 +493,7 @@ const Home = () => {
               <TextField
                 required
                 id="filled-required"
-                defaultValue=""
+                
                 variant="filled"
                 value={profileData.personalEmail}
                 onChange={handleChange("personalEmail")}
