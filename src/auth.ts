@@ -50,7 +50,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           // Parse the set-cookie header to get the Authorization token
           const authorizationToken = parseAndGetCookie(setCookieHeader);
           cookies().set("Authorization", authorizationToken)
-          const user = await response.data.user;
+          const user = await response.data.user;  
           // console.log("user", response.data.user);
           if (user ) {
             const isMatch = bcrypt.compare(
