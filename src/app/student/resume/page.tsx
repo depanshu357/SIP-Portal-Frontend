@@ -9,24 +9,97 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { enqueueSnackbar } from "notistack";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import fileHandlers from "@/api/file";
+import studentHandlers from "@/api/student";
 import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";
-
-interface Resume {
-  name: string;
-  category: "master" | "single";
-  uploadTime: string;
-  file: File;
-}
-
-const Resume = () => {
+import { ResumeType, StudentInfoForResume } from "@/types/custom_types";
+const ResumePage = () => {
   const [category, setCategory] = React.useState<"master" | "single">("single");
-  const [resumes, setResumes] = React.useState<Resume[]>([]);
+  const [resumes, setResumes] = React.useState<ResumeType[]>([]);
+  const [studentInfoForResumeName, setStudentInfoForResumeName] =
+    React.useState<StudentInfoForResume>({
+      name: "",
+      rollNumber: "",
+      program: "",
+      department: "",
+    });
   const [file, setFile] = React.useState<File | null>(null);
   const eventContext = useContext(EventContext);
   const event: EventType = eventContext ? eventContext.event : EventDefault;
+
+  useEffect(() => {
+    function getInitialData() {
+      studentHandlers
+        .getInfoForResume()
+        .then(
+          (res: {
+            message: string;
+            variant: "success" | "error";
+            data: StudentInfoForResume | null;
+          }) => {
+            if (res.variant === "success" && res.data) {
+              setStudentInfoForResumeName(res.data);
+              return;
+            }
+            enqueueSnackbar(res.message, { variant: res.variant });
+          }
+        );
+    }
+    function getResumeList() {
+      if(!event || !event.Title) return;
+      fileHandlers
+        .getResumeList(event.Title)
+        .then(
+          (res: {
+            message: string;
+            variant: "success" | "error" | "";
+            data: ResumeType[] | null;
+          }) => {
+            console.log(res.message);
+            if ((res.variant === "success" || res.variant === "") && res.data) {
+              setResumes(res.data);
+              console.log(res.data);
+              return;
+            }
+            enqueueSnackbar(res.message, { variant: "error" });
+          }
+        );
+    }
+    getInitialData();
+    getResumeList();
+    return () => {
+      getInitialData();
+      getResumeList();
+    };
+  }, []);
+  const resumeNames = (): Array<String> => {
+    if (!studentInfoForResumeName) return [];
+    const list = [];
+    const base_name =
+      studentInfoForResumeName.name.split(" ").join("_") +
+      "_" +
+      studentInfoForResumeName.rollNumber +
+      "_" +
+      studentInfoForResumeName.program +
+      "_" +
+      studentInfoForResumeName.department;
+    list.push(base_name + "_MT.pdf");
+    for (let i = 1; i <= 3; i++) {
+      list.push(base_name + "_S" + i + ".pdf");
+    }
+    return list;
+  };
+  const requiredResumeNames = ():Array<String> => {
+    if(!resumes || resumes.length===0) return resumeNames();
+    const allResumeNames = resumes.map((resume) => resume.Name);
+    console.log(resumes)
+    // return allResumeNames;
+    const requiredResumes = resumes.filter((resume) => !allResumeNames.includes(resume.Name));
+    const requiredResumeNames = requiredResumes.map((resume) => resume.Name);
+    return requiredResumeNames;
+  }
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -34,6 +107,9 @@ const Resume = () => {
     }
   };
   const handleFileUpload = () => {
+    if (event.Title && event.AcademicYear && category){
+      console.log(event.Title, event.AcademicYear, category)
+    }else return;
     if (file) {
       if (file.type !== "application/pdf") {
         enqueueSnackbar("Invalid file type", { variant: "error" });
@@ -43,28 +119,34 @@ const Resume = () => {
         enqueueSnackbar("File size too large", { variant: "error" });
         return;
       }
-      const newResume: Resume = {
-        name: file.name,
-        category,
-        uploadTime: new Date().toLocaleString(),
-        file,
-      };
-      setResumes([...resumes, newResume]);
-      fileHandlers.post(file, event.Title, event.AcademicYear, category).then((res:{message:string,variant:"success"|"error"}) => {
-        enqueueSnackbar(res.message, { variant: res.variant });
-      })
-    }else{
+      // setResumes([...resumes, newResume]);
+      console.log(event)
+      fileHandlers
+        .post(file, event.Title, event.AcademicYear, category)
+        .then((res: { message: string; variant: "success" | "error" }) => {
+          enqueueSnackbar(res.message, { variant: res.variant });
+        });
+    } else {
       enqueueSnackbar("Please select a file", { variant: "error" });
     }
   };
   const showFileSize = (file: File | null) => {
-    if(!file) return <span></span>
-    const sizeInMB = (file.size / (1024 * 1024));
-    if(sizeInMB > 1){
-      return <span>file size:<span className="text-red-500">{sizeInMB.toFixed(3)+"MB"}</span></span>
+    if (!file) return <span></span>;
+    const sizeInMB = file.size / (1024 * 1024);
+    if (sizeInMB > 1) {
+      return (
+        <span>
+          file size:
+          <span className="text-red-500">{sizeInMB.toFixed(3) + "MB"}</span>
+        </span>
+      );
     }
-    return <span>file size:<span>{sizeInMB.toFixed(3)+"MB"}</span></span>
-  }
+    return (
+      <span>
+        file size:<span>{sizeInMB.toFixed(3) + "MB"}</span>
+      </span>
+    );
+  };
   return (
     <div className="max-w-[1200px] mx-auto w-[95vw] md:w-full">
       <h1 className="text-3xl font-bold text-emerald-800 mb-6">
@@ -95,6 +177,9 @@ const Resume = () => {
             Total of 4 resumes allowed including Master Resume
           </li>
           <li className="mb-1">Max File Size: 1MB</li>
+          <li className="mb-1">{requiredResumeNames().map((name,index)=>{
+            return <li key={index}>{name}</li>
+          })}</li>
         </ol>
       </div>
       <div className="bg-white shadow-lg mx-auto m-4">
@@ -129,14 +214,24 @@ const Resume = () => {
           </div>
         </div>
         <div className="flex flex-row-reverse justify-between items-center text-gray-500 p-4 pt-0">
-          <button className="bg-emerald-800 text-white p-2 mt-4 rounded-md" onClick={handleFileUpload}>
+          <button
+            className="bg-emerald-800 text-white p-2 mt-4 rounded-md"
+            onClick={handleFileUpload}
+          >
             Upload
           </button>
           <div>{showFileSize(file)}</div>
         </div>
       </div>
+      <div>
+        {resumeNames().map((name, index) => (
+          <div key={index} className="bg-white shadow-lg mx-auto m-4">
+            {name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default Resume;
+export default ResumePage;

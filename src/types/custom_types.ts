@@ -18,3 +18,17 @@ export const EventDefault: EventType = {
   StartDate: "",
   AcademicYear: "",
 };
+
+
+export interface ResumeType  {
+  Name: string;
+  Category: "master" | "single";
+  IsVerified: string;
+  ID: number;
+}
+export interface StudentInfoForResume {
+  name: string,
+  rollNumber: string,
+  program: string,
+  department: string,
+}
