@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import authInstance, {fileInstance} from "./config";
+import authInstance, {fileDownloadInstance, fileInstance} from "./config";
 
 import { ResumeType } from "@/types/custom_types";
 
@@ -41,6 +41,18 @@ const fileHandlers = {
             return { message: "Failed to fetch data", variant: "error", data: null };
         }
     },
+    downloadFile : async (id: number): Promise<{ message: string, variant: "success" | "error", data: Blob | null }> => {
+        try {
+            const response = await fileDownloadInstance.get(`/student/download-file`,{
+                params: {
+                    id: id,
+                },
+            })
+            return { message: "File downloaded successfully", variant: "success", data: response.data };
+        } catch (err) {
+            return { message: "Failed to download file", variant: "error", data: null };
+        }
+    }
 }
 
 export default fileHandlers;

@@ -26,15 +26,9 @@ import {
 import { dataGridTheme } from "@/theme";
 import { ThemeProvider } from "@emotion/react";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
-const columns = [
-  { field: "Name", headerName: "Name", minWidth: 200, flex: 2 },
-  { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 1 },
-  { field: "Category", headerName: "Category", minWidth: 100, flex: 1 },
-  { field: "IsVerified", headerName: "Verified", minWidth: 100, flex: 1 },
-].map((col) => ({
-  ...col,
-  headerClassName: "font-bold text-base text-emerald-600",
-}));
+import { DownloadIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 
 function Toolbar() {
   return (
@@ -67,6 +61,59 @@ const ResumePage = () => {
   const eventContext = useContext(EventContext);
   const event: EventType = eventContext ? eventContext.event : EventDefault;
 
+  const handleFileDownload = (id: number, name: string) => {
+    fileHandlers.downloadFile(id).then(
+      (res: {
+        message: string;
+        variant: "success" | "error";
+        data: Blob | null;
+      }) => {
+        if (res.variant === "success" && res.data) {
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", name);
+          document.body.appendChild(link);
+          link.click();
+
+          // cleanup
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(link);
+        }
+        enqueueSnackbar(res.message, { variant: res.variant });
+      }
+    );
+  }
+  const columns = [
+    { field: "Name", headerName: "Name", minWidth: 200, flex: 2 },
+    { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 1 },
+    { field: "Category", headerName: "Category", minWidth: 100, flex: 1 },
+    { field: "IsVerified", headerName: "Verified", minWidth: 100, flex: 1 },
+    {
+      field: "Action",
+      headerName: "Action",
+      minWidth: 100,
+      flex: 1,
+      renderCell: (params: any) => {
+        return (
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-emerald-600 hover:text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+              onClick={() => {handleFileDownload(params.row.id, params.row.Name)}}
+            >
+              <DownloadIcon className="mr-2 h-4 w-4" />
+              Download
+            </Button>
+          </div>
+        );
+      },
+    },
+  ].map((col) => ({
+    ...col,
+    headerClassName: "font-bold text-base text-emerald-600",
+  }));
   useEffect(() => {
     function getInitialData() {
       studentHandlers
