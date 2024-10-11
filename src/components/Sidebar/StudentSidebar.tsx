@@ -88,14 +88,6 @@ const initialLinks: Array<LinkType> = [
     isForEvent: false
   },
   {
-    title: "Profile",
-    label:"",
-    icon: UserRoundPen,
-    variant: "ghost",
-    href: "/student/profile",
-    isForEvent: false
-  },
-  {
     title: "Intern Policy",
     label:"",
     icon: ReceiptText,
@@ -140,6 +132,9 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
       const fileteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;
       });
+      if(isForEvent && event.Title === "") {
+        router.push("/student/event");
+      }
       const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
         if (link.href === pathname) {
           return { ...link, variant: "default" };
@@ -151,7 +146,7 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
     }
     handleLinks();
     return () => {
-      handleLinks();
+      // handleLinks();
     };
   }, [event, pathname]);
   useEffect(() => {
@@ -165,6 +160,9 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
       const fileteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;
       });
+      if(isForEvent && event.Title === "") {
+        router.push("/student/event");
+      }
       const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
         if (link.href === pathname) {
           return { ...link, variant: "default" };

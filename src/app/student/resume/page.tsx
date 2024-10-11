@@ -9,15 +9,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { enqueueSnackbar } from "notistack";
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import fileHandlers from "@/api/file";
 import studentHandlers from "@/api/student";
 import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";
 import { ResumeType, StudentInfoForResume } from "@/types/custom_types";
+
+import {
+  DataGrid,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
+} from "@mui/x-data-grid";
+
+import { dataGridTheme } from "@/theme";
+import { ThemeProvider } from "@emotion/react";
+import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
+const columns = [
+  { field: "Name", headerName: "Name", minWidth: 200, flex: 2 },
+  { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 1 },
+  { field: "Category", headerName: "Category", minWidth: 100, flex: 1 },
+  { field: "IsVerified", headerName: "Verified", minWidth: 100, flex: 1 },
+].map((col) => ({
+  ...col,
+  headerClassName: "font-bold text-base text-emerald-600",
+}));
+
+function Toolbar() {
+  return (
+    <div className="flex flex-row justify-between">
+      <div>
+        <GridToolbarFilterButton />
+        <GridToolbarExport />
+      </div>
+      <div>
+        <GridToolbarQuickFilter />
+      </div>
+    </div>
+  );
+}
+
 const ResumePage = () => {
   const [category, setCategory] = React.useState<"master" | "single">("single");
   const [resumes, setResumes] = React.useState<ResumeType[]>([]);
+  const [requiredResumeNames, setRequiredResumeNames] = React.useState<
+    string[]
+  >([]);
   const [studentInfoForResumeName, setStudentInfoForResumeName] =
     React.useState<StudentInfoForResume>({
       name: "",
@@ -48,19 +86,18 @@ const ResumePage = () => {
         );
     }
     function getResumeList() {
-      if(!event || !event.Title) return;
+      if (!event || !event.Title) return;
+      console.log(event);
       fileHandlers
-        .getResumeList(event.Title)
+        .getResumeList(event.Title, event.AcademicYear)
         .then(
           (res: {
             message: string;
             variant: "success" | "error" | "";
             data: ResumeType[] | null;
           }) => {
-            console.log(res.message);
-            if ((res.variant === "success" || res.variant === "") && res.data) {
+            if (res.variant === "success" && res.data) {
               setResumes(res.data);
-              console.log(res.data);
               return;
             }
             enqueueSnackbar(res.message, { variant: "error" });
@@ -69,12 +106,21 @@ const ResumePage = () => {
     }
     getInitialData();
     getResumeList();
-    return () => {
-      getInitialData();
-      getResumeList();
-    };
   }, []);
-  const resumeNames = (): Array<String> => {
+  useEffect(() => {
+    if (!studentInfoForResumeName || !resumes) return;
+    const names = resumeNames(studentInfoForResumeName);
+    const currentResumeNames = resumes.map((resume) => resume.Name);
+    const requiredNames = names.filter(
+      (name) => !currentResumeNames.includes(name)
+    );
+    setRequiredResumeNames(requiredNames);
+    return () => {};
+  }, [resumes, studentInfoForResumeName]);
+
+  const resumeNames = (
+    studentInfoForResumeName: StudentInfoForResume
+  ): Array<string> => {
     if (!studentInfoForResumeName) return [];
     const list = [];
     const base_name =
@@ -91,14 +137,24 @@ const ResumePage = () => {
     }
     return list;
   };
-  const requiredResumeNames = ():Array<String> => {
-    if(!resumes || resumes.length===0) return resumeNames();
-    const allResumeNames = resumes.map((resume) => resume.Name);
-    console.log(resumes)
-    // return allResumeNames;
-    const requiredResumes = resumes.filter((resume) => !allResumeNames.includes(resume.Name));
-    const requiredResumeNames = requiredResumes.map((resume) => resume.Name);
-    return requiredResumeNames;
+  function updateResumeList() {
+    if (!event || !event.Title) return;
+    console.log(event);
+    fileHandlers
+      .getResumeList(event.Title, event.AcademicYear)
+      .then(
+        (res: {
+          message: string;
+          variant: "success" | "error" | "";
+          data: ResumeType[] | null;
+        }) => {
+          if (res.variant === "success" && res.data) {
+            setResumes(res.data);
+            return;
+          }
+          enqueueSnackbar(res.message, { variant: "error" });
+        }
+      );
   }
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -107,10 +163,14 @@ const ResumePage = () => {
     }
   };
   const handleFileUpload = () => {
-    if (event.Title && event.AcademicYear && category){
-      console.log(event.Title, event.AcademicYear, category)
-    }else return;
+    if (!(event.Title && event.AcademicYear && category)) {
+      return;
+    }
     if (file) {
+      if (requiredResumeNames.includes(file.name) === false) {
+        enqueueSnackbar("Invalid file name", { variant: "error" });
+        return;
+      }
       if (file.type !== "application/pdf") {
         enqueueSnackbar("Invalid file type", { variant: "error" });
         return;
@@ -119,12 +179,14 @@ const ResumePage = () => {
         enqueueSnackbar("File size too large", { variant: "error" });
         return;
       }
-      // setResumes([...resumes, newResume]);
-      console.log(event)
       fileHandlers
         .post(file, event.Title, event.AcademicYear, category)
         .then((res: { message: string; variant: "success" | "error" }) => {
           enqueueSnackbar(res.message, { variant: res.variant });
+          if (res.variant === "success") {
+            setFile(null);
+            updateResumeList();
+          }
         });
     } else {
       enqueueSnackbar("Please select a file", { variant: "error" });
@@ -154,32 +216,34 @@ const ResumePage = () => {
       </h1>
       <div>
         <ol className="list-decimal list-inside">
-          <li className="mb-1">
-            Click on the button below to upload your resume.
-          </li>
-          <li className="mb-1">
+          <li>Click on the button below to upload your resume.</li>
+          <li>
             Your resume will be reviewed by our team and you will be notified
             once it is approved.
           </li>
-          <li className="mb-1">
+          <li>
             You can only upload one resume at a time. If you want to update your
             resume, you will have to upload a new one.
           </li>
-          <li className="mb-1">
+          <li>
             Master Resume refers to multi-page pdf which contains all the points
             you want to include in your single page resumes.{" "}
           </li>
-          <li className="mb-1">
+          <li>
             Single Resume refers to single-page pdfs you want to submit for a
             specific job.
           </li>
-          <li className="mb-1">
-            Total of 4 resumes allowed including Master Resume
-          </li>
-          <li className="mb-1">Max File Size: 1MB</li>
-          <li className="mb-1">{requiredResumeNames().map((name,index)=>{
-            return <li key={index}>{name}</li>
-          })}</li>
+          <li>Total of 4 resumes allowed including Master Resume</li>
+          {requiredResumeNames.length ? (
+            <li>
+              Preferred names are{" "}
+              {requiredResumeNames.map((e) => (
+                <span className="font-bold">{e} </span>
+              ))}
+            </li>
+          ) : (
+            <li>Status: all required resumes are uploaded</li>
+          )}
         </ol>
       </div>
       <div className="bg-white shadow-lg mx-auto m-4">
@@ -224,11 +288,33 @@ const ResumePage = () => {
         </div>
       </div>
       <div>
-        {resumeNames().map((name, index) => (
-          <div key={index} className="bg-white shadow-lg mx-auto m-4">
-            {name}
-          </div>
-        ))}
+        <ThemeProvider theme={dataGridTheme}>
+          <DataGrid
+            autoHeight
+            rows={resumes}
+            columns={columns}
+            slots={{ toolbar: Toolbar, noRowsOverlay: CustomNoRowsOverlay }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            sx={{
+              padding: "10px",
+              maxWidth: "1200px",
+              marginX: "10px",
+              margin: "auto",
+              backgroundColor: "white",
+              outline: "none",
+              border: "0px",
+              boxShadow:
+                "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+              "--DataGrid-overlayHeight": "300px",
+              marginTop: "4rem",
+              minHeight: "calc(50vh)",
+            }}
+          />
+        </ThemeProvider>
       </div>
     </div>
   );
