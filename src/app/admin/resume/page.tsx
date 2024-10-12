@@ -46,28 +46,28 @@ const ResumeAdminPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const eventContext = useContext(EventContext);
   const event: EventType = eventContext ? eventContext.event : EventDefault;
-  useEffect(() => {
-    function getResumeList() {
-      if (!event || !event.Title) return;
-      console.log(event);
-      fileHandlers
-        .getResumeListForAdmin(event.Title, event.AcademicYear)
-        .then(
-          (res: {
-            message: string;
-            variant: "success" | "error" | "";
-            data: ResumeTypeForAdmin[] | null;
-          }) => {
-            if (res.variant === "success" && res.data) {
-              setResumes(res.data);
-              return;
-            }
-            enqueueSnackbar(res.message, { variant: "error" });
+  function getResumeList() {
+    if (!event || !event.Title) return;
+    console.log(event);
+    fileHandlers
+      .getResumeListForAdmin(event.Title, event.AcademicYear)
+      .then(
+        (res: {
+          message: string;
+          variant: "success" | "error" | "";
+          data: ResumeTypeForAdmin[] | null;
+        }) => {
+          if (res.variant === "success" && res.data) {
+            setResumes(res.data);
+            return;
           }
-        );
-    }
+          enqueueSnackbar(res.message, { variant: "error" });
+        }
+      );
+  }
+  useEffect(() => {
     getResumeList();
-  }, []);
+  }, [])
   const handleVerficationToggle = (ID: number) => {
     let requiredVerificationState = "No";
     const updatedResumes = resumes.map((resume) => {
@@ -114,6 +114,14 @@ const ResumeAdminPage = () => {
         }
       );
   };
+  const handleFileReject = (id: number) => {
+    fileHandlers.deleteFile(id).then((res) => {
+      enqueueSnackbar(res.message, { variant: res.variant });
+        if (res.variant === "success") {
+            setResumes(resumes.filter((resume) => resume.id !== id));
+        }
+    });
+  }
   const columns: any = [
     { field: "Name", headerName: "Name", minWidth: 200, flex: 4 },
     { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 2 },
@@ -167,15 +175,16 @@ const ResumeAdminPage = () => {
       headerName: "Reject",
       flex: 2,
       minWidth: 100,
-      renderCell: (params: { row: ResumeType }) => {
+      renderCell: (params: { row: ResumeTypeForAdmin }) => {
         return (
           <div>
             <Button
               variant="outline"
               size="sm"
               className="text-red-600 hover:text-red-700 border-red-300 hover:bg-red-50"
+              onClick={() => handleFileReject(params.row.id)}
             >
-              Reject
+              Delete
             </Button>
           </div>
         );

@@ -79,7 +79,7 @@ const fileHandlers = {
     },
     downloadFile : async (id: number): Promise<{ message: string, variant: "success" | "error", data: Blob | null }> => {
         try {
-            const response = await fileDownloadInstance.get(`/student/download-file`,{
+            const response = await fileDownloadInstance.get(`/download-file`,{
                 params: {
                     id: id,
                 },
@@ -87,6 +87,18 @@ const fileHandlers = {
             return { message: "File downloaded successfully", variant: "success", data: response.data };
         } catch (err) {
             return { message: "Failed to download file", variant: "error", data: null };
+        }
+    },
+    deleteFile: async (id: number): Promise<{ message: string, variant: "success" | "error" }> => {
+        try {
+            await authInstance.delete('/admin/delete-resume', {
+                params :{
+                    id: id,
+                }
+            });
+            return { message: "File deleted successfully", variant: "success" };
+        } catch (err) {
+            return { message: "Failed to delete file", variant: "error" };
         }
     }
 }
