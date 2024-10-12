@@ -26,6 +26,16 @@ export interface ResumeType  {
   IsVerified: string;
   ID: number;
 }
+
+export interface ResumeTypeForAdmin  {
+  Name: string;
+  Category: "master" | "single";
+  IsVerified: string;
+  id: number;
+  Event: string;
+  CreatedAt: string;
+}
+
 export interface StudentInfoForResume {
   name: string,
   rollNumber: string,

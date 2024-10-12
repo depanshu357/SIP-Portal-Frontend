@@ -29,7 +29,6 @@ import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { DownloadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-
 function Toolbar() {
   return (
     <div className="flex flex-row justify-between">
@@ -45,9 +44,13 @@ function Toolbar() {
 }
 
 const ResumePage = () => {
-  const [category, setCategory] = React.useState<"master" | "single">("single");
   const [resumes, setResumes] = React.useState<ResumeType[]>([]);
   const [requiredResumeNames, setRequiredResumeNames] = React.useState<
+    string[]
+  >([]);
+  const [requiredMasterResumeName, setRequiredMasterResumeName] =
+    useState<string>("");
+  const [requiredSingleResumeNames, setRequiredSingleResumeNames] = useState<
     string[]
   >([]);
   const [studentInfoForResumeName, setStudentInfoForResumeName] =
@@ -62,28 +65,30 @@ const ResumePage = () => {
   const event: EventType = eventContext ? eventContext.event : EventDefault;
 
   const handleFileDownload = (id: number, name: string) => {
-    fileHandlers.downloadFile(id).then(
-      (res: {
-        message: string;
-        variant: "success" | "error";
-        data: Blob | null;
-      }) => {
-        if (res.variant === "success" && res.data) {
-          const url = window.URL.createObjectURL(new Blob([res.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", name);
-          document.body.appendChild(link);
-          link.click();
+    fileHandlers
+      .downloadFile(id)
+      .then(
+        (res: {
+          message: string;
+          variant: "success" | "error";
+          data: Blob | null;
+        }) => {
+          if (res.variant === "success" && res.data) {
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", name);
+            document.body.appendChild(link);
+            link.click();
 
-          // cleanup
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(link);
+            // cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+          }
+          enqueueSnackbar(res.message, { variant: res.variant });
         }
-        enqueueSnackbar(res.message, { variant: res.variant });
-      }
-    );
-  }
+      );
+  };
   const columns = [
     { field: "Name", headerName: "Name", minWidth: 200, flex: 2 },
     { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 1 },
@@ -101,7 +106,9 @@ const ResumePage = () => {
               variant="outline"
               size="sm"
               className="text-emerald-600 hover:text-emerald-700 border-emerald-300 hover:bg-emerald-50"
-              onClick={() => {handleFileDownload(params.row.id, params.row.Name)}}
+              onClick={() => {
+                handleFileDownload(params.row.id, params.row.Name);
+              }}
             >
               <DownloadIcon className="mr-2 h-4 w-4" />
               Download
@@ -134,7 +141,6 @@ const ResumePage = () => {
     }
     function getResumeList() {
       if (!event || !event.Title) return;
-      console.log(event);
       fileHandlers
         .getResumeList(event.Title, event.AcademicYear)
         .then(
@@ -179,14 +185,18 @@ const ResumePage = () => {
       "_" +
       studentInfoForResumeName.department;
     list.push(base_name + "_MT.pdf");
+    setRequiredMasterResumeName(base_name + "_MT.pdf");
     for (let i = 1; i <= 3; i++) {
       list.push(base_name + "_S" + i + ".pdf");
+      setRequiredSingleResumeNames([
+        ...requiredSingleResumeNames,
+        base_name + "_S" + i + ".pdf",
+      ]);
     }
     return list;
   };
   function updateResumeList() {
     if (!event || !event.Title) return;
-    console.log(event);
     fileHandlers
       .getResumeList(event.Title, event.AcademicYear)
       .then(
@@ -210,34 +220,45 @@ const ResumePage = () => {
     }
   };
   const handleFileUpload = () => {
-    if (!(event.Title && event.AcademicYear && category)) {
+    if (!(event.Title && event.AcademicYear)) {
       return;
     }
-    if (file) {
-      if (requiredResumeNames.includes(file.name) === false) {
-        enqueueSnackbar("Invalid file name", { variant: "error" });
-        return;
-      }
-      if (file.type !== "application/pdf") {
-        enqueueSnackbar("Invalid file type", { variant: "error" });
-        return;
-      }
-      if (file.size > 1024 * 1024) {
-        enqueueSnackbar("File size too large", { variant: "error" });
-        return;
-      }
-      fileHandlers
-        .post(file, event.Title, event.AcademicYear, category)
-        .then((res: { message: string; variant: "success" | "error" }) => {
-          enqueueSnackbar(res.message, { variant: res.variant });
-          if (res.variant === "success") {
-            setFile(null);
-            updateResumeList();
-          }
-        });
-    } else {
+    if (!file) {
       enqueueSnackbar("Please select a file", { variant: "error" });
+      return;
     }
+    const category = file.name.endsWith("MT.pdf") ? "master" : "single";
+    if(requiredResumeNames.includes(requiredMasterResumeName) && file.name !== requiredMasterResumeName){
+      enqueueSnackbar("Please upload Master Resume First", { variant: "error" });
+      return;
+    }
+    if (requiredResumeNames.length === 0) {
+      enqueueSnackbar("All required resumes are uploaded", {
+        variant: "error",
+      });
+      return;
+    }
+    if (requiredResumeNames.includes(file.name) === false) {
+      enqueueSnackbar("Invalid file name", { variant: "error" });
+      return;
+    }
+    if (file.type !== "application/pdf") {
+      enqueueSnackbar("Invalid file type", { variant: "error" });
+      return;
+    }
+    if (file.size > 1024 * 1024) {
+      enqueueSnackbar("File size too large", { variant: "error" });
+      return;
+    }
+    fileHandlers
+      .post(file, event.Title, event.AcademicYear, category)
+      .then((res: { message: string; variant: "success" | "error" }) => {
+        enqueueSnackbar(res.message, { variant: res.variant });
+        if (res.variant === "success") {
+          setFile(null);
+          updateResumeList();
+        }
+      });
   };
   const showFileSize = (file: File | null) => {
     if (!file) return <span></span>;
@@ -281,15 +302,27 @@ const ResumePage = () => {
             specific job.
           </li>
           <li>Total of 4 resumes allowed including Master Resume</li>
-          {requiredResumeNames.length ? (
+          {requiredResumeNames.includes(requiredMasterResumeName) ? (
             <li>
-              Preferred names are{" "}
-              {requiredResumeNames.map((e) => (
-                <span className="font-bold">{e} </span>
-              ))}
+              Required Master Resume Name :{" "}
+              <span className="font-bold">{requiredMasterResumeName}</span>
             </li>
           ) : (
-            <li>Status: all required resumes are uploaded</li>
+            <li><span className="font-bold">Status</span>: Master Resume has been uploaded</li>
+          )}
+          {requiredResumeNames.filter((e) => e !== requiredMasterResumeName)
+            .length ? (
+            <li>
+              {" "}
+              Required Single resume names are{" "}
+              {requiredResumeNames
+                .filter((e) => e !== requiredMasterResumeName)
+                .map((e) => (
+                  <span className="font-bold">{e} </span>
+                ))}
+            </li>
+          ) : (
+            <li><span className="font-bold">Status</span>: All required Single resumes have been uploaded</li>
           )}
         </ol>
       </div>
@@ -307,8 +340,8 @@ const ResumePage = () => {
               className="border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 cursor-pointer"
             />
           </div>
-          <div className="w-full md:w-4/12">
-            <Label htmlFor="category" className="text-emerald-700">
+          <div className="w-full md:w-4/12 flex flex-col-reverse">
+            {/* <Label htmlFor="category" className="text-emerald-700">
               Resume Category
             </Label>
             <Select
@@ -321,16 +354,17 @@ const ResumePage = () => {
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="master">Master</SelectItem>
               </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="flex flex-row-reverse justify-between items-center text-gray-500 p-4 pt-0">
-          <button
-            className="bg-emerald-800 text-white p-2 mt-4 rounded-md"
+            </Select> */}
+            <button
+            className="bg-emerald-800 text-white p-2 mt-4 rounded-md w-full"
             onClick={handleFileUpload}
           >
             Upload
           </button>
+          </div>
+        </div>
+        <div className="flex flex-row-reverse justify-between items-center text-gray-500 p-4 py-0">
+          
           <div>{showFileSize(file)}</div>
         </div>
       </div>
