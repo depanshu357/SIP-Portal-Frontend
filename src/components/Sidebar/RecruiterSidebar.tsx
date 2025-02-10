@@ -53,7 +53,7 @@ const initialLinks: Array<LinkType> = [
     label: "0",
     icon: FileBox,
     variant: "ghost",
-    href: "/recruiter/submit-proforma",
+    href: "/recruiter/job-description",
     isForEvent: true,
   },
   {

@@ -70,3 +70,10 @@ export const defaultProfileData: ProfileDataType = {
     friendsName: "",
     friendsContactDetails: "",
   }
+
+  export type RecruiterProfileDataType = {
+    Company: string;
+    Email: string;
+    ContactNumber: string;
+    AdditionalInfo: string;
+  }

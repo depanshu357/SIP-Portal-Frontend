@@ -118,6 +118,12 @@ export const inputStyle = {
   width: "360px",
 };
 
+export const textInputStyle = {
+  margin: "10px",
+  marginX: "40px",
+  width: "100%",
+}
+
 export const textFieldStyle = {
   width: "100%",
   backgroundColor: "#aef2d07d"

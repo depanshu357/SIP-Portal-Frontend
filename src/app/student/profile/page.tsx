@@ -67,7 +67,7 @@ const Home = () => {
   const event: EventType = eventContext ? eventContext.event : EventDefault;
   // console.log(session)
   const handleChange = (field: string) => (event: { target: { value: string; }; }) => {
-    setProfileData({ ...profileData, [field]: event.target.value });
+    setProfileData((prev) => ({ ...prev, [field]: event.target.value }));
     // console.log(formData);
   };
   useEffect(() => {
@@ -111,11 +111,11 @@ const Home = () => {
   }
   
   return (
-    <div >Student Home
+    <div >
       <div>
         {session ? (
           <div> 
-            <p>Signed in as {session?.user?.email}</p>
+            
           </div>
         ) : (
           <div>
@@ -126,7 +126,7 @@ const Home = () => {
       <div>
       <ThemeProvider theme={profileTheme}>
         <Paper
-          sx={{ maxWidth: "1200px", width: "90vw", margin: "auto" }}
+          sx={{ maxWidth: "1200px", marginX: "10px", margin: "auto", marginTop:"2rem" }}
           elevation={3}
         >
           <h1 className='text-center text-4xl p-2 font-bold text-emerald-600'>Profile</h1>
@@ -136,7 +136,7 @@ const Home = () => {
               display: "flex",
               flexDirection: "row",
               flexWrap: "wrap",
-              justifyContent: "space-evenly",
+              justifyContent: "space-between",
             }}
             // onSubmit={handleSubmit}
           >
