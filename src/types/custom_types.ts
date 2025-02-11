@@ -42,3 +42,10 @@ export interface StudentInfoForResume {
   program: string,
   department: string,
 }
+
+export interface JobDescriptionInput{
+  title: string;
+  description: string;
+  location: string;
+  stipend: string;
+}
