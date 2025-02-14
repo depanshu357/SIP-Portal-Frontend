@@ -42,7 +42,7 @@ type LinkType = {
 const initialLinks: Array<LinkType> = [
   {
     title: "Notifications",
-    label: "128",
+    label: "0",
     icon: Bell,
     variant: "default",
     href: "/recruiter/notifications",
