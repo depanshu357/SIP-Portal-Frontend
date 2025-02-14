@@ -15,6 +15,7 @@ function modifyData(data: any): RecruiterProfileDataType {
     Email: data.Email,
     ContactNumber: data.ContactNumber,
     AdditionalInfo: data.AdditionalInfo,
+    NatureOfBusiness: data.NatureOfBusiness,
   }
   return modifiedData;
 }
@@ -129,6 +130,17 @@ const RecruiterProfile = () => {
                 variant="filled"
                 onChange={handleChange("ContactNumber")}
                 value={profileData?.ContactNumber}
+                sx={textFieldStyle}
+              ></TextField>
+            </div>
+            <div style={inputStyle}>
+              <Typography variant="body1">Nature Of Business</Typography>
+              <TextField
+                required
+                id="filled-required"
+                variant="filled"
+                onChange={handleChange("NatureOfBusiness")}
+                value={profileData?.NatureOfBusiness}
                 sx={textFieldStyle}
               ></TextField>
             </div>

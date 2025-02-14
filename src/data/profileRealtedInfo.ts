@@ -1,5 +1,9 @@
 export const branchList: Array<string> = ["AE","BSBE","CE","CHE","CSE","EE","MSE","ME","CHM","ECO","ES","MTH","SDS","PHY","CGS","DES","IME","MSP","NET","PSE","Stats","HSS","Mathematics","SEE","SSA"]
 export const programList: Array<string> = ["BT", "BS", "DoubleMajor", "DualA", "DualB", "DualC", "MT", "MSR", "MSc", "MDes", "MBA", "PhD"]
+export const ineligibleCombList: Array<{ branch: string; programs: Array<string> }> = [
+  { branch: "AE", programs: ["BS", "DualA", "DualB", "DualC", "MSc", "MDes", "MBA"] },
+  { branch: "BSBE", programs: ["BS", "DualA", "DualB", "DualC", "MSc", "MDes", "MBA"] }
+]
 
 export type ProfileDataType = {
     name: string;
@@ -76,4 +80,5 @@ export const defaultProfileData: ProfileDataType = {
     Email: string;
     ContactNumber: string;
     AdditionalInfo: string;
+    NatureOfBusiness: string;
   }

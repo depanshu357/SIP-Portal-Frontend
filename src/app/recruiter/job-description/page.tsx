@@ -12,6 +12,7 @@ import { EventContext } from "@/contexts/eventContext";
 import { JobDescriptionInput } from "@/types/custom_types";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import BranchProgramTable from "@/components/BranchProgramTable";
 
 type Props = {};
 
@@ -21,12 +22,14 @@ const JobDescriptionPage = (props: Props) => {
   const event: EventType = eventContext ? eventContext.event : EventDefault;
 
   const [jobDescription, setJobDescription] = useState<JobDescriptionInput>({title: "", description: "", location: "", stipend: ""});
+  const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(new Set())
+  
   const handleInputChange = (e: string, target: string) => {
     setJobDescription({...jobDescription, [target]: e});
   }
 
   const handleSubmit =  () => {
-    const data = {...jobDescription, description: value, eventId: event.id};
+    const data = {...jobDescription, description: value, eventId: event.id, eligibility: Array.from(selectedCombinations)};
     console.log(data);
     if(!event || !event.id) return;
     const instance = axios.create({
@@ -62,8 +65,8 @@ const JobDescriptionPage = (props: Props) => {
           </h1>
           <div>
             <div>
-              <Label className="text-md font-bold text-black">
-                Job Heading
+              <Label className="text-lg font-bold text-black">
+                Job Heading (Profile)
               </Label>
               <Input
                 placeholder="Write job heading..."
@@ -101,6 +104,9 @@ const JobDescriptionPage = (props: Props) => {
                 />
                 </div>
             </div>
+          </div>
+          <div>  
+            <BranchProgramTable selectedCombinations={selectedCombinations} setSelectedCombinations={setSelectedCombinations} />
           </div>
           <div className="flex flex-row-reverse mt-4">
             <Button className="bg-emerald-500 text-white hover:bg-emerald-600" onClick={handleSubmit}>Submit</Button>
