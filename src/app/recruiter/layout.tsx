@@ -1,5 +1,6 @@
 'use client';
 
+import '@mantine/dates/styles.css';
 import RecruiterSidebar from "@/components/Sidebar/RecruiterSidebar";
 import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";

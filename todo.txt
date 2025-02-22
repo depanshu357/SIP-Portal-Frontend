@@ -1,2 +1,8 @@
 to check if the job description form is filled fully
 list of ineligible combinations need to be updated
+to add validation button for admins(except for superadmin), student and recruiters
+to add delete button for notifications for admin
+to check for remember button (basically life of validation tokens) and add refresh tokens if necessary 
+to prepare SIP Portal logo
+to get list of combinations of programXbranch to apply in job-description form
+add proforma pages for admin, student

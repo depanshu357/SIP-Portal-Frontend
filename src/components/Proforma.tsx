@@ -50,17 +50,25 @@ const Proforma = ({id}: Props) => {
     <div className='flex flex-col gap-2'>
         <div className="flex flex-col">
             <Label className='text-md font-bold'>Company</Label>
-            <div className='border-emerald-200 border-2 h-8 rounded-md'>{data?.Recruiter?.Company}</div>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data?.Recruiter?.Company}</div>
         </div>
         <div>
             <Label className='text-md font-bold'>Profile</Label>
-            <div className='border-emerald-200 border-2 h-8 rounded-md'>{data.Profile}</div>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data.Profile}</div>
         </div>
         <div>
             <Label className='text-md font-bold'>Description</Label>
             <div className='border-emerald-200 border-2 rounded-md'>
                 <RichTextReader key={data?.ID} value={data?.Description?.toString() ?? ""} />
             </div>
+        </div>
+        <div>
+            <Label className='text-md font-bold'>Stipend</Label>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data.Stipend}</div>
+        </div>
+        <div>
+            <Label className='text-md font-bold'>Location</Label>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data.Location}</div>
         </div>
     </div>
     <div>

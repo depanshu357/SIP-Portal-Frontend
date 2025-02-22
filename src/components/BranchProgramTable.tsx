@@ -8,7 +8,6 @@ type Props = {selectedCombinations: Set<string>, setSelectedCombinations: React.
 
 const BranchProgramTable = ({selectedCombinations, setSelectedCombinations}: Props) => {
 //   const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(new Set())
-
   const isEligible = (branch: string, program: string) => {
     const ineligible = ineligibleCombinations.find((item) => item.branch === branch && item.programs.includes(program))
     return !ineligible ? true : false

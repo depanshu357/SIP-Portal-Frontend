@@ -38,9 +38,13 @@ function formatTime(dateString: string): string {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
-  return `${day}-${month}-${year}` === "01-01-1" ? "N/A" : `${day}-${month}-${year}`;
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12;
+  const time = `${formattedHours}:${minutes} ${ampm}`;
+  return `${day}-${month}-${year}` === "01-01-1" ? "N/A" : `${day}-${month}-${year} ${time}`;
 }
-
 
 
 
@@ -92,6 +96,10 @@ const RecruiterJobOpenings = (props: Props) => {
     router.push(`/recruiter/proforma/${id}`);
   }
 
+  const handleEditProforma = (id: string) => {
+    router.push(`/recruiter/edit-proforma/${id}`)
+  }
+
   const columns = [
     { field: "title", headerName: "Position", minWidth: 200, flex: 1 },
     { field: "deadline", headerName: "Deadline", minWidth: 200, flex: 1,
@@ -121,13 +129,13 @@ const RecruiterJobOpenings = (props: Props) => {
     },
     {
       field: "edit",
-      headerName: "Edit",
+      headerName: "Action",
       flex: 1,
       minWidth: 100,
       renderCell: (params: { row: Row }) => {
         return (
           <Button
-            // onClick={() => handleEventEnter(params.row)}
+            onClick={() => handleEditProforma(params.row.id)}
             className="bg-emerald-600 hover:bg-emerald-500"
           >
             Edit

@@ -145,6 +145,9 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
         if (link.href === pathname) {
           isForEvent = link.isForEvent ?? false;
         }
+        if(pathname.startsWith("/recruiter/proforma") || pathname.startsWith("/recruiter/edit-proforma")){
+          isForEvent = true;
+        }
       });
       const fileteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;

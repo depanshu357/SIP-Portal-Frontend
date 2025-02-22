@@ -1,55 +1,89 @@
 "use client";
 
-import React, { useState, useContext } from "react";
-import {DateTimePicker} from '@mantine/dates';
+import React, { useState, useContext, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { DateTimePicker } from "@mantine/dates";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Paper, TextField, Typography } from "@mui/material";
-import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/button";
-import { EventContextType, EventDefault, EventType } from "@/types/custom_types";
+import {
+  EventContextType,
+  EventDefault,
+  EventType,
+} from "@/types/custom_types";
 import { EventContext } from "@/contexts/eventContext";
 import { JobDescriptionInput } from "@/types/custom_types";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import BranchProgramTable from "@/components/BranchProgramTable";
+import RichTextReader from "@/components/RichTextReader";
+import RichTextEditor from "@/components/RichTextEditor";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type Props = {};
 
-const JobDescriptionPage = (props: Props) => {
+const EditProforma = (props: Props) => {
   const [value, setValue] = useState("");
   const [timeValue, setTimeValue] = useState<Date>(new Date());
+  const params = useParams();
+  const router = useRouter();
   const eventContext = useContext(EventContext) as EventContextType | null;
   const event: EventType = eventContext ? eventContext.event : EventDefault;
 
-  const [jobDescription, setJobDescription] = useState<JobDescriptionInput>({title: "", description: "", location: "", stipend: ""});
-  const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(new Set())
-  
-  const handleInputChange = (e: string, target: string) => {
-    setJobDescription({...jobDescription, [target]: e});
-  }
+  const [jobDescription, setJobDescription] = useState<any>({});
+  const [selectedCombinations, setSelectedCombinations] = useState<Set<string>>(
+    new Set()
+  );
 
-  const handleSubmit =  () => {
-    // TODO: add checks if all the fields are submitted are not
-    const data = {...jobDescription, description: value, eventId: event.id, eligibility: Array.from(selectedCombinations), deadline: timeValue};
-    console.log(data);
-    if(!event || !event.id) return;
+  useEffect(() => {
     const instance = axios.create({
       withCredentials: true,
     });
-    instance.post(`${process.env.NEXT_PUBLIC_API_KEY}/recruiter/create-job`, data).then((res) => {
-      console.log(res);
-      enqueueSnackbar("Job Description created successfully", { variant: "success" });
-    }).catch((err) => {
-      console.log(err);
-      enqueueSnackbar("Error creating Job Description", { variant: "error" });
+    instance
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/recruiter/proforma`, {
+        params: {
+          proformaId: params.id,
+        },
+      })
+      .then((res) => {
+        // console.log(res.data.proforma);
+        let proforma = res.data.proforma;
+        setJobDescription(proforma);
+        setSelectedCombinations(new Set(proforma.Eligibility));
+        setTimeValue(new Date(proforma.Deadline));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const handleSubmit = () => {
+    // TODO: add checks if all the fields are submitted are not
+    const data = {
+      ...jobDescription,
+      eligibility: Array.from(selectedCombinations),
+      deadline: timeValue,
+    };
+    // console.log(data);
+    if (!event || !event.id) return;
+    const instance = axios.create({
+      withCredentials: true,
     });
-  
-
-  }
-
-
+    instance
+      .post(`${process.env.NEXT_PUBLIC_API_KEY}/recruiter/edit-job-description`, data)
+      .then((res) => {
+        console.log(res);
+        enqueueSnackbar("Job Description updated successfully", {
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar("Error creating Job Description", { variant: "error" });
+      });
+  };
   return (
     <div>
       <Paper
@@ -63,11 +97,16 @@ const JobDescriptionPage = (props: Props) => {
         elevation={3}
       >
         <div>
-          
-          <h1 className="text-center text-4xl p-2 font-bold text-emerald-600">
-            Job Description Form
+          <div onClick={() => router.back()} className='cursor-pointer'>
+            <ArrowBackIcon  />
+          </div>
+          <h1 className="text-center text-4xl p-2 pt-0 font-bold text-emerald-600">
+            Edit Description Form
           </h1>
-          
+          <p className="text-gray-400">
+            Note: You can only edit deadline and eligibility
+          </p>
+
           <div>
             <div>
               <Label className="text-lg font-bold text-black">
@@ -77,15 +116,19 @@ const JobDescriptionPage = (props: Props) => {
                 placeholder="Write job heading..."
                 type="text"
                 className="mx-auto border-emerald-500 bg-white"
-                value={jobDescription.title}
-                onChange={(e) => handleInputChange(e.target.value, "title")}
+                value={jobDescription.Title}
+                disabled={true}
               />
             </div>
             <div className="mt-4">
               <Label className="text-lg font-bold text-black">Content</Label>
               {/* <QuillTextEditor value={value} setValue={setValue} /> */}
               {/* <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} /> */}
-              <RichTextEditor value={value} setValue={setValue} />
+              {/* <RichTextEditor value={jobDescription?.Description?.toString()} setValue={setValue} /> */}
+              <RichTextReader
+                key={jobDescription?.ID}
+                value={jobDescription?.Description?.toString() ?? ""}
+              />
             </div>
             <div className="flex gap-2 justify-between w-full mt-4 flex-col md:flex-row">
               <div className="flex flex-col w-full md:w-1/2">
@@ -95,26 +138,26 @@ const JobDescriptionPage = (props: Props) => {
                 <textarea
                   placeholder="Write job location..."
                   className="w-full p-2 text-sm border rounded-md resize-none border-emerald-500 bg-white h-20 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                  value={jobDescription.location}
-                  onChange={(e) => handleInputChange(e.target.value, "location")}
+                  value={jobDescription.Location}
+                  disabled={true}
                 />
               </div>
-                <div className="flex flex-col w-full md:w-1/2">
+              <div className="flex flex-col w-full md:w-1/2">
                 <Label className="text-lg font-bold text-black">Stipend</Label>
                 <textarea
                   placeholder="Write job location..."
                   className="w-full p-2 text-sm border rounded-md resize-none border-emerald-500 bg-white h-20 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                  value={jobDescription.stipend}
-                  onChange={(e) => handleInputChange(e.target.value, "stipend")}
+                  value={jobDescription.Stipend}
+                  disabled={true}
                 />
-                </div>
+              </div>
             </div>
           </div>
-          <div>  
+          <div>
             <BranchProgramTable selectedCombinations={selectedCombinations} setSelectedCombinations={setSelectedCombinations} />
           </div>
           <div className="flex flex-row mt-4 flex-wrap justify-between items-end">
-          <DateTimePicker
+            <DateTimePicker
               valueFormat="DD MMM YYYY hh:mm A"
               label="Deadline"
               placeholder="Pick date and time"
@@ -122,7 +165,12 @@ const JobDescriptionPage = (props: Props) => {
               value={timeValue}
               onChange={(value) => value && setTimeValue(value)}
             />
-            <Button className="bg-emerald-500 text-white hover:bg-emerald-600" onClick={handleSubmit}>Submit</Button>
+            <Button
+              className="bg-emerald-500 text-white hover:bg-emerald-600"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
           </div>
         </div>
       </Paper>
@@ -130,4 +178,4 @@ const JobDescriptionPage = (props: Props) => {
   );
 };
 
-export default JobDescriptionPage;
+export default EditProforma;

@@ -39,7 +39,7 @@ const SignInBox = () => {
       return;
     } else {
       enqueueSnackbar("Logged in successfully", { variant: "success" });
-      router.push("/student/profile");
+      router.push("/student/event");
     }
   };
 
