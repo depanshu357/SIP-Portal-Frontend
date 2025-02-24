@@ -27,6 +27,11 @@ export interface ResumeType  {
   ID: number;
 }
 
+export interface ResumeTypeForStudentApplication  {
+  Name: string;
+  ID: number;
+}
+
 export interface ResumeTypeForAdmin  {
   Name: string;
   Category: "master" | "single";

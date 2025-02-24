@@ -40,6 +40,26 @@ const fileHandlers = {
             return { message: "Failed to fetch data", variant: "error", data: null };
         }
     },
+    getResumeListForApplication: async (eventId: string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeType[] | null }> => {
+        try {
+            const res = await authInstance.get('/student/get-resume-list-for-application', {
+                params: {
+                    eventId: eventId,
+                }
+            });
+            const fileList = res.data.files;
+            const resumeList: ResumeType[] = fileList.map((file: any) => {
+                return {
+                    Name: file.Name,
+                    ID: file.ID,
+                };
+            });
+            return { message: "Data fetched successfully", variant: "success", data: resumeList };
+        } catch (error) {
+            console.log(error);
+            return { message: "Failed to fetch data", variant: "error", data: null };
+        }
+    },
     getResumeListForAdmin: async (eventId: string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeTypeForAdmin[] | null }> => {
         try {
             const res = await authInstance.get('/admin/resume-list', {
