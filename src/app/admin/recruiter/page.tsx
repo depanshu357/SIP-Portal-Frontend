@@ -56,19 +56,15 @@ const RecruiterList = () => {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_KEY}/admin/recruiter-list`
         );
-        console.log(res.data.users);
+        // console.log(res.data.users);
         const users = await res.data.users;
-        users.forEach(
-          (user: ReceivedUser) => {
-            setRows(
-              (prev: RowUser[]) => [
-                ...prev,
-                { id: user.ID, Email: user.Email, IsVerified: user.IsVerified },
-              ]
-            );
-          }
-        );
-        // setRows(res.data.users);
+        const formattedUsers = users.map((user: ReceivedUser) => ({
+          id: user.ID,
+          Email: user.Email,
+          IsVerified: user.IsVerified,
+          Company: user.Company
+        }));
+        setRows(formattedUsers);
       } catch (err) {
         console.log(err);
       }

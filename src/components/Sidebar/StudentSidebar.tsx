@@ -128,6 +128,9 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
         if (link.href === pathname) {
           isForEvent = link.isForEvent ?? false;
         }
+        if(pathname.startsWith("/student/proforma")){
+          isForEvent = true;
+        }
       });
       const fileteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;

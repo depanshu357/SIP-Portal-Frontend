@@ -32,7 +32,6 @@ export interface ResumeTypeForAdmin  {
   Category: "master" | "single";
   IsVerified: string;
   id: number;
-  Event: string;
   CreatedAt: string;
 }
 

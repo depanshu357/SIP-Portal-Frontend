@@ -50,7 +50,7 @@ const ResumeAdminPage = () => {
     if (!event || !event.Title) return;
     console.log(event);
     fileHandlers
-      .getResumeListForAdmin(event.Title, event.AcademicYear)
+      .getResumeListForAdmin(event.id)
       .then(
         (res: {
           message: string;
@@ -125,7 +125,6 @@ const ResumeAdminPage = () => {
   const columns: any = [
     { field: "Name", headerName: "Name", minWidth: 200, flex: 4 },
     { field: "CreatedAt", headerName: "Uploaded At", minWidth: 100, flex: 2 },
-    { field: "Event", headerName: "Event", minWidth: 100, flex: 2 },
     { field: "Category", headerName: "Category", minWidth: 100, flex: 2 },
     {
       field: "verfication",

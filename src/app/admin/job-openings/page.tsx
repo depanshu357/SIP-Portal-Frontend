@@ -69,7 +69,7 @@ const JobOpenings = (props: Props) => {
         },
       })
       .then((res) => {
-        console.log(res.data.jobDescriptionList);
+        // console.log(res.data.jobDescriptionList);
         let jobDescriptionList = res.data.jobDescriptionList
         setRows(jobDescriptionList.map((row: any) => {return {id: row.ID, title: row.Title, company: row.Company, visible: row.Visible, deadline: row.Deadline}}))
       });
@@ -150,7 +150,25 @@ const JobOpenings = (props: Props) => {
           </div>
         );
       },
-    }
+    },
+    {
+        field: "applicants",
+        headerName: "Applicants",
+        flex: 1,
+        minWidth: 100,
+        renderCell: (params: { row: any }) => {
+          return (
+            <div>
+              <Button
+              onClick={() => handleEventShowProforma(params.row.id)}
+              className="bg-emerald-600 hover:bg-emerald-500"
+            >
+              Show
+            </Button>
+            </div>
+          );
+        },
+      }
 ]
   return (
     <div>

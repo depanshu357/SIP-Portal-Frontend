@@ -4,12 +4,12 @@ import authInstance, {fileDownloadInstance, fileInstance} from "./config";
 import { ResumeType, ResumeTypeForAdmin } from "@/types/custom_types";
 
 const fileHandlers = {
-    post: async (file: File, event: string, academic_year: string,category: string): Promise<{ message: string, variant: "success" | "error" }> => {
+    post: async (file: File, eventId: string, category: string): Promise<{ message: string, variant: "success" | "error" }> => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('academic_year', academic_year);
-        formData.append('event', event);
+        formData.append('eventId', eventId);
         formData.append('category', category);
+        console.log(file)
         try {
             await fileInstance.post('/student/upload-file', formData);
             return { message: "File uploaded successfully", variant: "success" };
@@ -17,12 +17,11 @@ const fileHandlers = {
             return { message: "Failed to upload file", variant: "error" };
         }
     },
-    getResumeList: async (event: string,academic_year:string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeType[] | null }> => {
+    getResumeList: async (eventId: string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeType[] | null }> => {
         try {
             const res = await authInstance.get('/student/resume-list', {
                 params: {
-                    event: event,
-                    academic_year: academic_year,
+                    eventId: eventId,
                 }
             });
             const fileList = res.data.files;
@@ -41,12 +40,11 @@ const fileHandlers = {
             return { message: "Failed to fetch data", variant: "error", data: null };
         }
     },
-    getResumeListForAdmin: async (event: string,academic_year:string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeTypeForAdmin[] | null }> => {
+    getResumeListForAdmin: async (eventId: string): Promise<{ message: string, variant: "success" | "error" | "", data: ResumeTypeForAdmin[] | null }> => {
         try {
             const res = await authInstance.get('/admin/resume-list', {
                 params: {
-                    event: event,
-                    academic_year: academic_year,
+                    eventId: eventId,
                 }
             });
             const fileList = res.data.files;
@@ -57,7 +55,6 @@ const fileHandlers = {
                     IsVerified: file.IsVerified ? "Yes" : "No",
                     id: file.ID,
                     CreatedAt: format( file.CreatedAt, "dd/MM/yyyy"),
-                    Event: file.Event,
                 };
             });
             return { message: "Data fetched successfully", variant: "success", data: resumeList };

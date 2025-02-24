@@ -1,13 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { enqueueSnackbar } from "notistack";
 import React, { useState, useContext, useEffect } from "react";
 import fileHandlers from "@/api/file";
@@ -142,7 +135,7 @@ const ResumePage = () => {
     function getResumeList() {
       if (!event || !event.Title) return;
       fileHandlers
-        .getResumeList(event.Title, event.AcademicYear)
+        .getResumeList(event.id)
         .then(
           (res: {
             message: string;
@@ -198,7 +191,7 @@ const ResumePage = () => {
   function updateResumeList() {
     if (!event || !event.Title) return;
     fileHandlers
-      .getResumeList(event.Title, event.AcademicYear)
+      .getResumeList(event.id)
       .then(
         (res: {
           message: string;
@@ -251,7 +244,7 @@ const ResumePage = () => {
       return;
     }
     fileHandlers
-      .post(file, event.Title, event.AcademicYear, category)
+      .post(file, event.id, category)
       .then((res: { message: string; variant: "success" | "error" }) => {
         enqueueSnackbar(res.message, { variant: res.variant });
         if (res.variant === "success") {
