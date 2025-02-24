@@ -125,6 +125,9 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
         if (link.href === pathname) {
           isForEvent = link.isForEvent ?? false;
         }
+        if(pathname.startsWith("/admin/proforma")){
+          isForEvent = true;
+        }
       });
       const fileteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;

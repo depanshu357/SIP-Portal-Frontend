@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
@@ -7,19 +7,24 @@ import { Label } from './ui/label'
 import RichTextReader from './RichTextReader'
 import BranchProgramDisplayTable from './BranchProgramDisplayTable'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { EventContext } from "@/contexts/eventContext";
+import { EventDefault, EventType } from "@/types/custom_types";
 
 type Props = {id: any}
 
 const Proforma = ({id}: Props) => {
   const [data, setData] = useState<any>({})
   const router = useRouter()
+  const eventContext = useContext(EventContext);
+  const event: EventType = eventContext ? eventContext.event : EventDefault;
   useEffect(() => {
     const instance = axios.create({
         withCredentials: true,
         });
-    instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/recruiter/proforma`,{
+    instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/proforma`,{
         params: {
-            proformaId: id
+            proformaId: id,
+            eventId: event.id
         }
     }).then((res) => {
         console.log(res.data.proforma)
@@ -44,17 +49,16 @@ const Proforma = ({id}: Props) => {
         <ArrowBackIcon  />
     </div>
     <h1 className="text-center text-4xl p-2 font-bold text-emerald-600">
-        
             Proforma
           </h1>
     <div className='flex flex-col gap-2'>
         <div className="flex flex-col">
             <Label className='text-md font-bold'>Company</Label>
-            <div className='border-emerald-200 border-2 rounded-md p-2'>{data?.Recruiter?.Company}</div>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data?.Company}</div>
         </div>
         <div>
             <Label className='text-md font-bold'>Profile</Label>
-            <div className='border-emerald-200 border-2 rounded-md p-2'>{data.Profile}</div>
+            <div className='border-emerald-200 border-2 rounded-md p-2'>{data.Title}</div>
         </div>
         <div>
             <Label className='text-md font-bold'>Description</Label>

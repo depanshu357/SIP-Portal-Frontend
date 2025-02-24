@@ -122,7 +122,7 @@ const RecruiterJobOpenings = (props: Props) => {
             onClick={() => handleEventShowProforma(params.row.id)}
             className="bg-emerald-600 hover:bg-emerald-500"
           >
-            Link
+            Open
           </Button>
         );
       },
