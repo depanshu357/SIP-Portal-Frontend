@@ -133,11 +133,12 @@ const JobOpenings = () => {
         let idList: Array<number> = await getListOfAppliedJobIds();
         console.log(idList)
         setRows(
-          res.data.jobDescriptionList.filter((data: any) => !idList.includes(data.ID)).map((data: any) => ({
+          res.data.jobDescriptionList.map((data: any) => ({
             id: data.ID,
             company: data.Company,
             title: data.Title,
             deadline: data.Deadline,
+            disabled: idList.includes(data.ID)
           }))
         );
       });
@@ -218,10 +219,11 @@ const JobOpenings = () => {
                 className="bg-emerald-600 hover:bg-emerald-500 text-white hover:text-white"
                 onClick={() => {
                   setSelectedJob(params.row)
-                  setDialogOpen(true)
-                }}
-              >
-                Apply
+                    setDialogOpen(true)
+                  }}
+                  disabled={params.row.disabled || new Date(params.row.deadline) < new Date()}
+                  >
+                {params.row.disabled ? "Applied" : "Apply"}
               </Button>
             </DialogTrigger>
           </div>
