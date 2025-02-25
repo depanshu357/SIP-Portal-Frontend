@@ -16,6 +16,10 @@ import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
 import { Button } from "@/components/ui/button";
 import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";
+import { enqueueSnackbar } from "notistack";
+import { CircleArrowLeft, DownloadIcon } from "lucide-react";
+import React from "react";
+import fileHandlers from "@/api/file";
 
 type Received = {
   ID: string;
@@ -33,6 +37,20 @@ type Row = {
   visible: boolean;
 }
 
+function Toolbar() {
+  return (
+    <div className="flex flex-row justify-between">
+      <div>
+        <GridToolbarFilterButton />
+        <GridToolbarExport />
+      </div>
+      <div>
+        <GridToolbarQuickFilter />
+      </div>
+    </div>
+  );
+}
+
 function formatTime(dateString: string): string {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
@@ -47,12 +65,19 @@ function formatTime(dateString: string): string {
 }
 
 
-
+const authInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_KEY,
+  withCredentials: true,
+});
  
 type Props = {};
 
 const RecruiterJobOpenings = (props: Props) => {
   const [jobOpenings, setJobOpenings] = useState<Row[]>([]);
+  const [applicantRows, setApplicantRows] = useState<any>([]);
+  const [profileName, setProfileName] = useState<string>("");
+  const [isApplicantsVisible, setIsApplicantsVisible] =
+    useState<boolean>(false);
   const eventContext = useContext(EventContext);
   const event: EventType = eventContext ? eventContext.event : EventDefault;
   const router = useRouter();
@@ -100,6 +125,61 @@ const RecruiterJobOpenings = (props: Props) => {
     router.push(`/recruiter/edit-proforma/${id}`)
   }
 
+  const handleShowApplicants = (jobId: string) => {
+    authInstance
+      .get("/admin/get-applicants", {
+        params: {
+          proformaId: jobId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        let list = res.data.applicants;
+        setApplicantRows(
+          list.map((data: any) => {
+            return {
+              id: data.ID,
+              email: data.Email,
+              name: data.Name,
+              contactNumber: data.ContactNumber,
+              fileId: data.FileID,
+              rollNumber: data.RollNumber,
+            };
+          })
+        );
+        setIsApplicantsVisible(true);
+      });
+  };
+
+  const handleFileDownload = (id: number, name: string, rollNumber: string) => {
+    fileHandlers
+      .downloadFile(id)
+      .then(
+        (res: {
+          message: string;
+          variant: "success" | "error";
+          data: Blob | null;
+        }) => {
+          if (res.variant === "success" && res.data) {
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute(
+              "download",
+              profileName + "_" + rollNumber + "_" + name + ".pdf"
+            );
+            document.body.appendChild(link);
+            link.click();
+
+            // cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+          }
+          enqueueSnackbar(res.message, { variant: res.variant });
+        }
+      );
+  };
+
   const columns = [
     { field: "title", headerName: "Position", minWidth: 200, flex: 1 },
     { field: "deadline", headerName: "Deadline", minWidth: 200, flex: 1,
@@ -143,15 +223,76 @@ const RecruiterJobOpenings = (props: Props) => {
         );
       },
     },
-    
+    {
+          field: "applicants",
+          headerName: "Applicants",
+          flex: 1,
+          minWidth: 100,
+          renderCell: (params: { row: any }) => {
+            return (
+              <div>
+                <Button
+                  onClick={() => {
+                    handleShowApplicants(params.row.id);
+                    setProfileName(params.row.title);
+                  }}
+                  className="bg-emerald-600 hover:bg-emerald-500"
+                >
+                  Show
+                </Button>
+              </div>
+            );
+          },
+        },
   ];
-  return (<div>
-    <ThemeProvider theme={dataGridTheme}>
+
+  const applicantColumns = [
+    { field: "name", headerName: "Name", minWidth: 200, flex: 1 },
+    { field: "email", headerName: "Email", minWidth: 100, flex: 1 },
+    { field: "rollNumber", headerName: "Roll Number", minWidth: 100, flex: 1 },
+    {
+      field: "contactNumber",
+      headerName: "Contact Number",
+      minWidth: 100,
+      flex: 1,
+    },
+    {
+      field: "Action",
+      headerName: "Action",
+      minWidth: 100,
+      flex: 1,
+      renderCell: (params: any) => {
+        return (
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-emerald-600 hover:text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+              onClick={() => {
+                handleFileDownload(
+                  params.row.fileId,
+                  params.row.name,
+                  params.row.rollNumber
+                );
+              }}
+            >
+              <DownloadIcon className="mr-2 h-4 w-4" />
+              Download
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+  return (
+    <div>
+    {!isApplicantsVisible && (
+      <ThemeProvider theme={dataGridTheme}>
         <DataGrid
           autoHeight
           rows={jobOpenings}
           columns={columns}
-          slots={{ noRowsOverlay: CustomNoRowsOverlay }}
+          slots={{ toolbar: Toolbar, noRowsOverlay: CustomNoRowsOverlay }}
           slotProps={{
             toolbar: {
               showQuickFilter: true,
@@ -169,6 +310,40 @@ const RecruiterJobOpenings = (props: Props) => {
           }}
         />
       </ThemeProvider>
+    )}
+    {isApplicantsVisible && (
+      <div className=" rounded-lg w-auto">
+        <ThemeProvider theme={dataGridTheme}>
+        <div className="relative pt-2 flex justify-center items-center gap-2">
+          <span onClick={() => setIsApplicantsVisible(false)} className="cursor-pointer ">
+            <CircleArrowLeft size={30}/>
+          </span>
+          <span className="text-center text-3xl text-emerald-600 font-bold">Applicants List</span>
+        </div>
+          <DataGrid
+            autoHeight
+            rows={applicantRows}
+            columns={applicantColumns}
+            slots={{ toolbar: Toolbar, noRowsOverlay: CustomNoRowsOverlay }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            sx={{
+              padding: "10px",
+              maxWidth: "1200px",
+              marginX: "10px",
+              margin: "auto",
+              backgroundColor: "white",
+              "--DataGrid-overlayHeight": "300px",
+              marginTop: "2rem",
+              minHeight: "calc(100vh - 10rem)",
+            }}
+          />
+        </ThemeProvider>
+      </div>
+    )}
   </div>)
 };
 

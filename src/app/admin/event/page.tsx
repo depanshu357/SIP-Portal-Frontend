@@ -52,25 +52,21 @@ const AdminEvent = () => {
         );
         // console.log(res.data.events);
         const events = await res.data.events;
-        events.forEach((event: ReceivedEvent) => {
-          setRows((prev: RowEvent[]) => [
-            ...prev,
-            {
-              id: event.ID,
-              Title: event.Title,
-              IsActive: event.IsActive,
-              StartDate: formatTime(event.StartDate),
-              AcademicYear: event.AcademicYear,
-            },
-          ]);
-        });
+        const formattedEvents = events.map((user: ReceivedEvent) => ({
+          id: user.ID,
+          Title: user.Title,
+          IsActive: user.IsActive,
+          StartDate: formatTime(user.StartDate),
+          AcademicYear: user.AcademicYear,
+        }));
+        setRows(formattedEvents);
       } catch (err) {
         console.log(err);
       }
     };
-
+    fetchData();
     return () => {
-      fetchData();
+      
     };
   }, []);
   const handleEventChange = (row: RowEvent) => {

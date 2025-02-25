@@ -73,37 +73,31 @@ const AdminNotifications = () => {
     }
   }, [])
   
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/admin/notices`,
+        {params:{
+          event: event.id
+        }}
+      );
+      console.log(res.data.notices);
+      const notices = res.data.notices.map((notice: Received) => ({
+        id: notice.ID,
+        Heading: notice.Heading,
+        Content: notice.Content,
+        Recipients: notice.Recipients,
+        CreatedAt: notice.CreatedAt,
+      }));
+      setRows(notices);
+      // setRows(res.data.users);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_KEY}/admin/notices`,
-          {params:{
-            event: event.id
-          }}
-        );
-        console.log(res.data.notices);
-        const notices = await res.data.notices;
-        notices.forEach((notice: Received) => {
-          setRows((prev: Row[]) => [
-            ...prev,
-            {
-              id: notice.ID,
-              Heading: notice.Heading,
-              Content: notice.Content,
-              Recipients: notice.Recipients,
-              CreatedAt: notice.CreatedAt,
-            },
-          ]);
-        });
-        // setRows(res.data.users);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
+    fetchData();
     return () => {
-      fetchData();
     };
   }, []);
   const [selectedItem, setSelectedItem] = useState<null | Row>(null);
@@ -186,7 +180,7 @@ const AdminNotifications = () => {
                   {"Notices"}
                 </h1>
                 <Image
-                  src="/assets/images/notice.jpg"
+                  src="/public/assets/images/notice.jpg"
                   alt="empty"
                   width={500}
                   height={500}

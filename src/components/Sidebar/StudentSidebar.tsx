@@ -72,14 +72,6 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true,
   },
   {
-    title: "Contact us",
-    label: "",
-    icon: Phone,
-    variant: "ghost",
-    href: "/student/contact-us",
-    isForEvent: true,
-  },
-  {
     title: "Events",
     label:"",
     icon: LayoutList,
@@ -175,11 +167,12 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
       });
       setLinks(finalLinks);
     }
+    if (event.Title === "") {
+      router.push("/admin/event");
+    }
+    handleLinks();
     return () => {
-      if (event.Title === "") {
-        router.push("/admin/event");
-      }
-      handleLinks();
+      
     };
   }, []);
   const handleEventLeave = () => {

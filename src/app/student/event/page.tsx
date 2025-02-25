@@ -43,7 +43,6 @@ const StudentEvent = () => {
   const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext
     ? eventContext.setEvent
     : () => {};
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -51,25 +50,21 @@ const StudentEvent = () => {
         );
         // console.log(res.data.events);
         const events = await res.data.events;
-        events.forEach((user: ReceivedEvent) => {
-          setRows((prev: RowEvent[]) => [
-            ...prev,
-            {
-              id: user.ID,
-              Title: user.Title,
-              IsActive: user.IsActive,
-              StartDate: formatTime(user.StartDate),
-              AcademicYear: user.AcademicYear,
-            },
-          ]);
-        });
+        const formattedEvents = events.map((user: ReceivedEvent) => ({
+          id: user.ID,
+          Title: user.Title,
+          IsActive: user.IsActive,
+          StartDate: formatTime(user.StartDate),
+          AcademicYear: user.AcademicYear,
+        }));
+        setRows(formattedEvents);
       } catch (err) {
         console.log(err);
       }
     };
-
+  useEffect(() => {
+    fetchData();
     return () => {
-      fetchData();
     };
   }, []);
   const handleEventEnter = (row: RowEvent) => {

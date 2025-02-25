@@ -311,13 +311,13 @@ const JobOpenings = (props: Props) => {
         </ThemeProvider>
       )}
       {isApplicantsVisible && (
-        <div className="bg-white rounded-lg">
+        <div className=" rounded-lg w-auto">
           <ThemeProvider theme={dataGridTheme}>
-          <div className="relative pt-2">
-            <div className="text-center text-3xl text-emerald-600 font-bold">Applicants List</div>
-            <span onClick={() => setIsApplicantsVisible(false)} className="cursor-pointer absolute right-2 top-2">
+          <div className="relative pt-2 flex justify-center items-center gap-2">
+            <span onClick={() => setIsApplicantsVisible(false)} className="cursor-pointer ">
               <CircleArrowLeft size={30}/>
             </span>
+            <span className="text-center text-3xl text-emerald-600 font-bold">Applicants List</span>
           </div>
             <DataGrid
               autoHeight

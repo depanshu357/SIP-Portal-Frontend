@@ -73,22 +73,6 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true,
   },
   {
-    title: "Profile",
-    label: "",
-    icon: UserRoundPen,
-    variant: "ghost",
-    href: "/recruiter/profile",
-    isForEvent: true,
-  },
-  {
-    title: "Contact us",
-    label: "",
-    icon: Phone,
-    variant: "ghost",
-    href: "/recruiter/contact-us",
-    isForEvent: true,
-  },
-  {
     title: "Events",
     label: "",
     icon: LayoutList,
@@ -163,7 +147,6 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
     }
     handleLinks();
     return () => {
-      handleLinks();
     };
   }, [event, pathname]);
   useEffect(() => {
@@ -186,11 +169,11 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
       });
       setLinks(finalLinks);
     }
+    if (event.Title === "") {
+      router.push("/recruiter/event");
+    }
+    handleLinks();
     return () => {
-      if (event.Title === "") {
-        router.push("/recruiter/event");
-      }
-      handleLinks();
     };
   }, []);
   const handleEventLeave = () => {
