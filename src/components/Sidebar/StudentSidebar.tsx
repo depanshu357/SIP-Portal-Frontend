@@ -64,14 +64,6 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true,
   },
   {
-    title: "Profile",
-    label: "",
-    icon: UserRoundPen,
-    variant: "ghost",
-    href: "/student/profile",
-    isForEvent: true,
-  },
-  {
     title: "Events",
     label:"",
     icon: LayoutList,

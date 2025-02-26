@@ -89,8 +89,8 @@ const Home = () => {
       })
     }
   
+    intializeProfileInfo()
     return () => {
-      intializeProfileInfo()
     }
   }, [session])
 
