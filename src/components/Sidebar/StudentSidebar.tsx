@@ -124,13 +124,13 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
           isForEvent = true;
         }
       });
-      const fileteredLinks = initialLinks.filter((link) => {
+      const filteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;
       });
       if(isForEvent && event.Title === "") {
         router.push("/student/event");
       }
-      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+      const finalLinks: LinkType[] = filteredLinks.map((link: LinkType) => {
         if (link.href === pathname) {
           return { ...link, variant: "default" };
         } else {
@@ -168,11 +168,10 @@ const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
       setLinks(finalLinks);
     }
     if (event.Title === "") {
-      router.push("/admin/event");
+      router.push("/student/event");
     }
     handleLinks();
     return () => {
-      
     };
   }, []);
   const handleEventLeave = () => {

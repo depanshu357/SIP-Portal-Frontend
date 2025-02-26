@@ -47,8 +47,8 @@ const RecruiterNotifications = () => {
   };
   useEffect(() => {
     if(typeof window === 'undefined') return;
+    setIsMobileView(window.innerWidth < 768);
     return () => {
-      setIsMobileView(window.innerWidth < 768);
     }
   }, [])
 

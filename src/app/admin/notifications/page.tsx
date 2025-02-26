@@ -35,21 +35,6 @@ type Received = {
   CreatedAt: string;
 };
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  maxWidth: "98vw",
-  bgcolor: "background.paper",
-  // border: "2px solid #000",
-  border:"0px",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 1
-};
-
 const AdminNotifications = () => {
   const [rows, setRows] = useState<Array<Row>>([]);
   const [open, setOpen] = useState(false);
@@ -68,8 +53,8 @@ const AdminNotifications = () => {
   };
   useEffect(() => {
     if(typeof window === 'undefined') return;
+    setIsMobileView(window.innerWidth < 768);
     return () => {
-      setIsMobileView(window.innerWidth < 768);
     }
   }, [])
   
@@ -180,7 +165,7 @@ const AdminNotifications = () => {
                   {"Notices"}
                 </h1>
                 <Image
-                  src="/public/assets/images/notice.jpg"
+                  src="/assets/images/notice.jpg"
                   alt="empty"
                   width={500}
                   height={500}

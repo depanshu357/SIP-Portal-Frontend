@@ -143,7 +143,7 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
     }
     handleLinks();
     return () => {
-      handleLinks();
+      // handleLinks();
     };
   }, [event, pathname]);
   useEffect(() => {
@@ -166,11 +166,11 @@ const AdminSidebar = ({ children }: { children: React.ReactNode }) => {
       });
       setLinks(finalLinks);
     }
+    if (event.Title === "") {
+      router.push("/admin/event");
+    }
+    handleLinks();
     return () => {
-      if (event.Title === "") {
-        router.push("/admin/event");
-      }
-      handleLinks();
     };
   }, []);
   const handleEventLeave = () => {

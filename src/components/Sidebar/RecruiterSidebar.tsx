@@ -133,10 +133,10 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
           isForEvent = true;
         }
       });
-      const fileteredLinks = initialLinks.filter((link) => {
+      const filteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;
       });
-      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+      const finalLinks: LinkType[] = filteredLinks.map((link: LinkType) => {
         if (link.href === pathname) {
           return { ...link, variant: "default" };
         } else {
@@ -157,10 +157,10 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
           isForEvent = link.isForEvent ?? false;
         }
       });
-      const fileteredLinks = initialLinks.filter((link) => {
+      const filteredLinks = initialLinks.filter((link) => {
         return link.isForEvent === isForEvent;
       });
-      const finalLinks: LinkType[] = fileteredLinks.map((link: LinkType) => {
+      const finalLinks: LinkType[] = filteredLinks.map((link: LinkType) => {
         if (link.href === pathname) {
           return { ...link, variant: "default" };
         } else {

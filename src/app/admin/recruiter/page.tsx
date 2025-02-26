@@ -70,8 +70,8 @@ const RecruiterList = () => {
       }
     };
 
+    fetchData();
     return () => {
-      fetchData();
     };
   }, []);
   return (

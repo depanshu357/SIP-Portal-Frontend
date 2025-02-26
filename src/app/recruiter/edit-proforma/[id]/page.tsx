@@ -42,7 +42,7 @@ const EditProforma = (props: Props) => {
       withCredentials: true,
     });
     instance
-      .get(`${process.env.NEXT_PUBLIC_API_KEY}/recruiter/proforma`, {
+      .get(`${process.env.NEXT_PUBLIC_API_KEY}/proforma`, {
         params: {
           proformaId: params.id,
         },

@@ -23,7 +23,7 @@ export default auth(async function middleware(req: NextRequest) {
   if (!isAuthenticated && !isPublicRoute) {
     return NextResponse.redirect(new URL(LOGIN, nextUrl));
   } 
-   if (isAuthenticated && isPublicRoute) {
+  if (isAuthenticated && isPublicRoute) {
     if (role === "student") {
       return NextResponse.redirect(new URL("/" + role + "/event", nextUrl));
     } else if (role === "recruiter") {

@@ -55,8 +55,8 @@ const AdminAdmin = () => {
       }
     };
     
+    fetchData();
     return (() => {
-      fetchData();
     })
   }, []);
 

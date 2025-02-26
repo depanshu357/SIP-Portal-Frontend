@@ -53,8 +53,8 @@ const AdminStudent = () => {
       }
     };
     
+    fetchData();
     return (() => {
-      fetchData();
     })
   }, []);
   return (
