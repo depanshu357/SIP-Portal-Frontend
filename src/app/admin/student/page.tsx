@@ -43,11 +43,8 @@ const AdminStudent = () => {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_KEY}/admin/student-list`);
         console.log(res.data.users);
         const users = await res.data.users
-        users.forEach((user: ReceivedUser) => {
-          setRows((prev: RowUser[]) => [...prev, { id: user.ID, Email: user.Email, IsVerified: user.IsVerified }]);
-        });
+        setRows(users.map((user:ReceivedUser) => {return { id: user.ID, Email: user.Email, IsVerified: user.IsVerified }}))
         // setRows(res.data.users);
-
       } catch (err) {
         console.log(err);
       }
