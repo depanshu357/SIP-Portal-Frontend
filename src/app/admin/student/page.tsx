@@ -44,7 +44,6 @@ const AdminStudent = () => {
         console.log(res.data.users);
         const users = await res.data.users
         setRows(users.map((user:ReceivedUser) => {return { id: user.ID, Email: user.Email, IsVerified: user.IsVerified }}))
-        // setRows(res.data.users);
       } catch (err) {
         console.log(err);
       }

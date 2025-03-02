@@ -1,0 +1,25 @@
+name: Deploy via SSH (Password Authentication)
+
+on:
+  push:
+    branches:
+      - main  # Change if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install SSHPass
+        run: sudo apt-get install -y sshpass
+
+      - name: Connect via SSH and Deploy
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+          screen -S sip_frontend -X stuff '
+            cd /home/vmadmin/SIP-Portal-Frontend && 
+            git pull origin main &&
+            npm install && 
+            npm run build && 
+            npm run start
+          '"
