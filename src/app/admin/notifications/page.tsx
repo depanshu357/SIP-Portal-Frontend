@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { ChevronsLeft, Search } from "lucide-react";
+import { ChevronsLeft, Search, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { parseISO, formatDistanceToNow } from "date-fns";
@@ -16,9 +16,13 @@ import { ListItem } from "@mui/material";
 import RichTextReader from "@/components/RichTextReader";
 import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";
+import { enqueueSnackbar } from "notistack";
 
 // import ReactQuill from "react-quill-new";
-
+const authInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_KEY,
+  withCredentials: true,
+});
 
 type Row = {
   id: string;
@@ -66,7 +70,7 @@ const AdminNotifications = () => {
           event: event.id
         }}
       );
-      console.log(res.data.notices);
+      // console.log(res.data.notices);
       const notices = res.data.notices.map((notice: Received) => ({
         id: notice.ID,
         Heading: notice.Heading,
@@ -82,8 +86,6 @@ const AdminNotifications = () => {
   };
   useEffect(() => {
     fetchData();
-    return () => {
-    };
   }, []);
   const [selectedItem, setSelectedItem] = useState<null | Row>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -95,6 +97,17 @@ const AdminNotifications = () => {
     const date = parseISO(dateString);
     const relativeTime = formatDistanceToNow(date, { addSuffix: true });
     return relativeTime;
+  }
+  const handleNoticeDelete = (id: string) => {
+    authInstance.delete(`/admin/delete-notice`, { params : {id: id}})
+      .then((res) => {
+        enqueueSnackbar(res.data.message, {variant: "success"})
+        setSelectedItem(null)
+        fetchData();
+      }).catch((err) => {
+        enqueueSnackbar(err.response?.data?.message || err.message, {variant: "error"})
+        console.log(err)
+      })
   }
   return (
     <div>
@@ -140,9 +153,10 @@ const AdminNotifications = () => {
           <div className="h-full">
             {selectedItem ? (
               <div className="h-full">
-                <h1 className="text-2xl font-bold p-5 bg-emerald-50 flex flex-row items-center gap-2">
+                <h1 className="text-2xl font-bold p-5 bg-emerald-50 flex flex-row items-center gap-2 justify-between">
                   <span className="text-emerald-500 md:hidden" onClick={handleClose}><ChevronsLeft /></span>
                   {selectedItem.Heading}
+                  <span className="cursor-pointer " onClick={() => handleNoticeDelete(selectedItem.id)}><Trash2 /></span>
                 </h1>
                 <div className="bg-emerald-100 p-2">
                   {selectedItem.Recipients.map((recipient: string,index: number) => {

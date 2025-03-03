@@ -34,21 +34,14 @@ type LinkType = {
 };
 
 const initialLinks: Array<LinkType> = [
-  {
-    title: "Events",
-    label: "",
-    icon: LayoutList,
-    variant: "default",
-    href: "/admin/event",
-    isForEvent: false,
-  },
+  
   {
     title: "Admin",
     label: "",
     icon: AdminPanelSettingsOutlinedIcon,
     variant: "default",
     href: "/admin/admin",
-    isForEvent: true,
+    isForEvent: false,
   },
   {
     title: "Student",
@@ -56,7 +49,7 @@ const initialLinks: Array<LinkType> = [
     icon: PersonSearchOutlinedIcon,
     variant: "ghost",
     href: "/admin/student",
-    isForEvent: true,
+    isForEvent: false,
   },
   {
     title: "Recruiters",
@@ -64,7 +57,7 @@ const initialLinks: Array<LinkType> = [
     icon: BadgeOutlinedIcon,
     variant: "ghost",
     href: "/admin/recruiter",
-    isForEvent: true,
+    isForEvent: false,
   },
   {
     title: "Create-Notice",
@@ -73,6 +66,14 @@ const initialLinks: Array<LinkType> = [
     variant: "ghost",
     href: "/admin/create-notice",
     isForEvent: true,
+  },
+  {
+    title: "Events",
+    label: "",
+    icon: LayoutList,
+    variant: "default",
+    href: "/admin/event",
+    isForEvent: false,
   },
   {
     title: "Create-Event",
@@ -97,6 +98,14 @@ const initialLinks: Array<LinkType> = [
     variant: "ghost",
     href: "/admin/resume",
     isForEvent: true,
+  },
+  {
+    title: "Student",
+    label: "",
+    icon: PersonSearchOutlinedIcon,
+    variant: "ghost",
+    href: "/admin/student-event",
+    isForEvent: true
   },
   {
     title: "Job Openings",

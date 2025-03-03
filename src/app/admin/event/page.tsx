@@ -102,7 +102,7 @@ const AdminEvent = () => {
     if (typeof setEvent === "function") {
       setEvent(row);
     }
-    router.push("/admin/admin");
+    router.push("/admin/notifications");
   };
   const columns = [
     { field: "Title", headerName: "Title", minWidth: 200, flex: 1 },

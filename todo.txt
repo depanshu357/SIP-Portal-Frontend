@@ -5,4 +5,5 @@ to add delete button for notifications for admin
 to check for remember button (basically life of validation tokens) and add refresh tokens if necessary 
 to prepare SIP Portal logo
 to get list of combinations of programXbranch to apply in job-description form
-add proforma pages for admin, student
+add proforma pages for admin, student - done
+check for entering into certain events
