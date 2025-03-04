@@ -108,6 +108,14 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true
   },
   {
+    title: "Recruiter",
+    label: "",
+    icon: BadgeOutlinedIcon,
+    variant: "ghost",
+    href: "/admin/recruiter-event",
+    isForEvent: true
+  },
+  {
     title: "Job Openings",
     label: "",
     icon: WorkOutlineModifiedIcon,

@@ -65,7 +65,7 @@ type ReceivedUser = {
   FrozenForEvents: number[];
 };
 
-const AdminStudentEvent = () => {
+const AdminRecruiterEvent = () => {
   const [rows, setRows] = useState<Array<RowUser>>([]);
   const [reason, setReason] = useState<string>('');
   const [selectedRow, setSelectedRow] = useState<RowUser | undefined>(undefined)
@@ -75,7 +75,7 @@ const AdminStudentEvent = () => {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_KEY}/admin/student-list-for-event`
+        `${process.env.NEXT_PUBLIC_API_KEY}/admin/recruiter-list-for-event`
       );
       console.log(res.data.users);
       const users = await res.data.users;
@@ -264,4 +264,4 @@ const AdminStudentEvent = () => {
   );
 };
 
-export default AdminStudentEvent;
+export default AdminRecruiterEvent;
