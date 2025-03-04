@@ -29,7 +29,7 @@ function Toolbar() {
   );
 }
 
-export const authInstance = axios.create({
+const authInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_KEY,
   withCredentials: true,
 });
