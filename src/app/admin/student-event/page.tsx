@@ -103,7 +103,7 @@ const AdminStudentEvent = () => {
   const ToggleFreezeAccount = () => {
     const data: RowUser | undefined = selectedRow ;
     if(!data || !selectedRow) return;
-    const reasonForFreeze = {...data.ReasonForFreeze, [selectedRow.id.toString()]: reason}
+    const reasonForFreeze = {...data.ReasonForFreeze, [eventId.toString()]: reason}
     authInstance
       .post(`/admin/toggle-freezing-for-event`, {
         id: data.id,
@@ -180,7 +180,7 @@ const AdminStudentEvent = () => {
                 className="data-[state=checked]:bg-emerald-600 bg-red focus:ring-emerald-500"
                 onClick={() => {
                   setSelectedRow(params.row)
-                  setReason(params?.row?.ReasonForFreeze[params.row.id.toString()])
+                  setReason(params?.row?.ReasonForFreeze[eventId.toString()])
                   // ToggleFreezeAccount(params.row);
                 }}
               />
@@ -197,7 +197,7 @@ const AdminStudentEvent = () => {
       renderCell: (params: { row: RowUser }) => {
         return (
           <div className="my-1">
-            {params?.row?.ReasonForFreeze[params.row.id.toString()]}
+            {params?.row?.ReasonForFreeze[eventId.toString()]}
             {/* <Input
               placeholder="Write reason..."
               type="text"

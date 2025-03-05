@@ -33,6 +33,7 @@ const ForgotPasswordBox = () => {
   const [otp, setOtp] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -49,9 +50,9 @@ const ForgotPasswordBox = () => {
       if (email === "") {
         enqueueSnackbar("Please fill all the fields", { variant: "error" });
         return;
-      } 
-
-      await axios
+      }
+      setLoading(true);
+      axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/send-otp`, { email: email })
         .then((res) => {
           console.log(res.data);
@@ -59,51 +60,74 @@ const ForgotPasswordBox = () => {
           enqueueSnackbar(msg, { variant: "success" });
           enqueueSnackbar("OTP is valid for 10 minutes", { variant: "info" });
           if (step < 3) setStep((prev) => prev + 1);
+          setLoading(false);
         })
         .catch((err) => {
+          setLoading(false);
           console.log(err);
           enqueueSnackbar(err.response?.data?.error ?? "Error sending OTP", {
             variant: "error",
           });
         });
     } else if (step === 2) {
-        if (otp.length !== 6) {
-            enqueueSnackbar('Please enter a valid OTP', { variant: 'error' });
-            return;
-          }
-    
-          axios
-            .post(`${process.env.NEXT_PUBLIC_API_KEY}/verify-otp`, { email: email, otp: otp })
-            .then((res) => {
-              enqueueSnackbar(res.data.message, { variant: 'success' });
-              if (step < 3) setStep((prev) => prev + 1)
-            })
-            .catch((err) => {
-              enqueueSnackbar(err.response?.data?.error ?? 'Failed to verify OTP', { variant: 'error' });
-            })
-    } else if (step === 3) {
-        if (password === '' || confirmPassword === '') {
-            enqueueSnackbar('Please fill all the fields', { variant: 'error' });
-            return;
-          }
-        if(password !== confirmPassword) {
-            enqueueSnackbar('Passwords do not match', { variant: 'error' });
-            return;
-        }
-        if(password.length < 8) {
-            enqueueSnackbar('Password should be atleast 8 characters long', { variant: 'error' });
-            return;
-        }
-        axios
-        .put(`${process.env.NEXT_PUBLIC_API_KEY}/change-password`, { email: email, password: password })
+      if (otp.length !== 6) {
+        setLoading(false);
+        enqueueSnackbar("Please enter a valid OTP", { variant: "error" });
+        return;
+      }
+
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API_KEY}/verify-otp`, {
+          email: email,
+          otp: otp,
+        })
         .then((res) => {
-          enqueueSnackbar(res.data.message, { variant: 'success' });
-          router.push('/sign-in');
+          setLoading(false);
+          enqueueSnackbar(res.data.message, { variant: "success" });
+          if (step < 3) setStep((prev) => prev + 1);
         })
         .catch((err) => {
-            console.log(err);
-          enqueueSnackbar(err.response?.data?.error ?? 'Failed to change password', { variant: 'error' });
+          setLoading(false);
+          enqueueSnackbar(err.response?.data?.error ?? "Failed to verify OTP", {
+            variant: "error",
+          });
+        });
+    } else if (step === 3) {
+      if (password === "" || confirmPassword === "") {
+        setLoading(false);
+        enqueueSnackbar("Please fill all the fields", { variant: "error" });
+        return;
+      }
+      if (password !== confirmPassword) {
+        setLoading(false);
+        enqueueSnackbar("Passwords do not match", { variant: "error" });
+        return;
+      }
+      if (password.length < 8) {
+        setLoading(false);
+        enqueueSnackbar("Password should be atleast 8 characters long", {
+          variant: "error",
+        });
+        return;
+      }
+      axios
+        .put(`${process.env.NEXT_PUBLIC_API_KEY}/change-password`, {
+          email: email,
+          password: password,
         })
+        .then((res) => {
+          setLoading(false);
+          enqueueSnackbar(res.data.message, { variant: "success" });
+          router.push("/sign-in");
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          enqueueSnackbar(
+            err.response?.data?.error ?? "Failed to change password",
+            { variant: "error" }
+          );
+        });
     }
     // setStep((prev) => prev + 1);
   };
@@ -195,25 +219,31 @@ const ForgotPasswordBox = () => {
                     </button>
                   </div>
                   <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" >Confirm Password</Label>
-                  <div className="relative">
-                    <Input
-                      name="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      required
-                      value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
-                    // className="border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility('confirmPassword')}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-emerald-700"
-                    >
-                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <div className="relative">
+                      <Input
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        // className="border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          togglePasswordVisibility("confirmPassword")
+                        }
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-emerald-700"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
             )}

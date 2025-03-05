@@ -79,9 +79,9 @@ const Home = () => {
       await instance.get(`${process.env.NEXT_PUBLIC_API_KEY}/student/profile-info`).then((res)=> {
         setProfileData(res.data)
         const data = res.data.profile
-        console.log(data)
+        // console.log(data)
 
-        console.log(profileData)
+        // console.log(profileData)
         setProfileData(modifyData(data))
       }).catch((err)=>{
         console.log(err)

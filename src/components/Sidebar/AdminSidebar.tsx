@@ -7,7 +7,7 @@ import { EventContext } from "@/contexts/eventContext";
 import { EventDefault, EventType } from "@/types/custom_types";
 
 import Nav from "@/components/Nav";
-import { Bell, Calendar, DoorOpen, FileText, LayoutList } from "lucide-react";
+import { Bell, Calendar, DoorOpen, FileText, LayoutList, Mail } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -62,7 +62,7 @@ const initialLinks: Array<LinkType> = [
   {
     title: "Create-Notice",
     label: "",
-    icon: EmailOutlinedIcon,
+    icon: Mail,
     variant: "ghost",
     href: "/admin/create-notice",
     isForEvent: true,

@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+
 import { EventContextType } from "@/contexts/eventContext";
 import { ThemeProvider } from "@emotion/react";
 import { useContext, useEffect, useState } from "react";
@@ -40,35 +42,34 @@ type RowEvent = {
     return relativeTime;
   }
 const RecruiterEvent = () => {
-    const [rows, setRows] = useState<Array<RowEvent>>([]);
+  const [rows, setRows] = useState<Array<RowEvent>>([]);
   const eventContext = useContext(EventContext) as EventContextType | null;
-  const router = useRouter();
+  const router = useRouter();  
+  const { data: session } = useSession();
   const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext ? eventContext.setEvent : () => {};
-   
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_KEY}/events`
-        );
-        // console.log(res.data.events);
-        const events = await res.data.events;
-        const formattedEvents = events.map((user: ReceivedEvent) => ({
-          id: user.ID,
-          Title: user.Title,
-          IsActive: user.IsActive,
-          StartDate: formatTime(user.StartDate),
-          AcademicYear: user.AcademicYear,
-        }));
-        setRows(formattedEvents);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_KEY}/public-events`
+      );
+      // console.log(res.data.events);
+      const events = await res.data.events;
+      const formattedEvents = events.map((user: ReceivedEvent) => ({
+        id: user.ID,
+        Title: user.Title,
+        IsActive: user.IsActive,
+        StartDate: formatTime(user.StartDate),
+        AcademicYear: user.AcademicYear,
+      }));
+      setRows(formattedEvents);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-    return () => {
-    };
   }, []);
   const handleEventEnter = (row: RowEvent) => {
     if (typeof setEvent === "function") {
@@ -89,8 +90,9 @@ const RecruiterEvent = () => {
           <Button
             onClick={() => handleEventEnter(params.row)}
             className="bg-emerald-600 hover:bg-emerald-500"
+            disabled={!session?.user?.verifiedForEvents?.includes(params.row.id) || session?.user?.frozenForEvents?.includes(params.row.id)}
           >
-            Enter
+            {session?.user?.frozenForEvents?.includes(params.row.id) ? session?.user?.reasonForFreeze[params.row.id.toString()] : "Enter"}
           </Button>
         );
       },
