@@ -58,7 +58,9 @@ const AdminAdmin = () => {
   }, []);
 
   const ChangeAdminAccess = (data: RowUser) => {
-    authInstance.post(`/admin/change-admin-access`).then((res)=>{
+    authInstance.post(`/admin/change-admin-access`,{
+      id: data.id,
+    }).then((res)=>{
       enqueueSnackbar(res.data.message, {variant: "success"})
       fetchData();
     }).catch((err)=>{
@@ -81,7 +83,7 @@ const AdminAdmin = () => {
               id="admin-access-mode"
               checked={params.row.HasAdminAccess}
               className="data-[state=checked]:bg-emerald-600 bg-red focus:ring-emerald-500"
-              disabled={!params.row.HasAdminAccess || session?.user?.role != 'superadmin' || session?.user?.id == params.row.id}
+              disabled={session?.user?.role != 'superadmin' || session?.user?.id == params.row.id}
               onClick={() => {
                 ChangeAdminAccess(params.row);
               }}

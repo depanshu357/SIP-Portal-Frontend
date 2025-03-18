@@ -44,7 +44,6 @@ const AdminEvent = () => {
   const setEvent: React.Dispatch<React.SetStateAction<EventType>> = eventContext
     ? eventContext.setEvent
     : () => {};
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -52,21 +51,21 @@ const AdminEvent = () => {
         );
         // console.log(res.data.events);
         const events = await res.data.events;
-        const formattedEvents = events.map((user: ReceivedEvent) => ({
-          id: user.ID,
-          Title: user.Title,
-          IsActive: user.IsActive,
-          StartDate: formatTime(user.StartDate),
-          AcademicYear: user.AcademicYear,
+        const formattedEvents = events.map((event: ReceivedEvent) => ({
+          id: event.ID,
+          Title: event.Title,
+          IsActive: event.IsActive,
+          StartDate: formatTime(event.StartDate),
+          AcademicYear: event.AcademicYear,
         }));
         setRows(formattedEvents);
       } catch (err) {
         console.log(err);
       }
     };
+  useEffect(() => {
     fetchData();
     return () => {
-      
     };
   }, []);
   const handleEventChange = (row: RowEvent) => {
@@ -79,19 +78,13 @@ const AdminEvent = () => {
     authInstance
       .put(`/admin/toggle-event-activation`, {
         id: row.id,
-        IsActive: !row.IsActive,
+        isActive: !row.IsActive,
       })
       .then((res) => {
         enqueueSnackbar("Event status changed successfully", {
           variant: "success",
         });
-        setRows((prev: RowEvent[]) =>
-          prev.map((event: RowEvent) =>
-            event.id === row.id
-              ? { ...event, IsActive: !event.IsActive }
-              : event
-          )
-        );
+        fetchData();
       })
       .catch((err) => {
         enqueueSnackbar("Failed to change event status", { variant: "error" });
