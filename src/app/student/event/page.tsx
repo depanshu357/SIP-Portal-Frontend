@@ -12,7 +12,7 @@ import { dataGridTheme } from "@/theme";
 
 import { EventContext } from "@/contexts/eventContext";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, isValid } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { EventType } from "@/types/custom_types";
 
@@ -32,9 +32,11 @@ type ReceivedEvent = {
 };
 
 function formatTime(dateString: string): string {
-  const date = parseISO(dateString);
-  const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
-  return relativeTime;
+   const date = parseISO(dateString);
+    if (!isValid(date)) {
+      return "Invalid Date"; 
+    }
+    return format(date, "dd-MM-yyyy");
 }
 const StudentEvent = () => {
   const [rows, setRows] = useState<Array<RowEvent>>([]);

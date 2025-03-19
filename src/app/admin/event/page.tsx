@@ -11,7 +11,7 @@ import { EventType, EventDefault } from "@/types/custom_types";
 import { DataGrid } from "@mui/x-data-grid";
 import { dataGridTheme } from "@/theme";
 import { CustomNoRowsOverlay } from "@/components/CustomNoRowsOverlay";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, isValid } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { enqueueSnackbar } from "notistack";
@@ -33,8 +33,12 @@ type ReceivedEvent = {
 
 function formatTime(dateString: string): string {
   const date = parseISO(dateString);
-  const relativeTime = format(new Date(date).toLocaleString(), "dd-MM-yyyy");
-  return relativeTime;
+  
+  if (!isValid(date)) {
+    return "Invalid Date"; 
+  }
+  
+  return format(date, "dd-MM-yyyy");
 }
 
 const AdminEvent = () => {
