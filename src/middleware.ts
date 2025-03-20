@@ -16,6 +16,10 @@ export default auth(async function middleware(req: NextRequest) {
   const isAuthenticated = !!session?.user;
   const role = await session?.user?.role;
   // console.log("isAuthenticated", isAuthenticated, nextUrl.pathname);
+  // redirect to sign-in page if it is in home page 
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL(LOGIN, nextUrl));
+  }
   const isPublicRoute =
     PUBLIC_ROUTES.find((route) => nextUrl.pathname.startsWith(route)) ||
     nextUrl.pathname === ROOT;
