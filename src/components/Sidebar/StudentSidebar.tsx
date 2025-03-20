@@ -80,6 +80,14 @@ const initialLinks: Array<LinkType> = [
     isForEvent: false
   },
   {
+    title: "Profile",
+    label:"",
+    icon: UserRoundPen,
+    variant: "ghost",
+    href: "/student/profile",
+    isForEvent: false
+  },
+  {
     title: "Contact us",
     label: "",
     icon: Phone,

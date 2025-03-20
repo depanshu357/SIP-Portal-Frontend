@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { branchList, ProfileDataType, defaultProfileData, programList } from '@/data/profileRealtedInfo';
@@ -19,6 +18,7 @@ import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import { EventDefault, EventType } from "@/types/custom_types";
 import { EventContext } from "@/contexts/eventContext";
+import { Button } from '@/components/ui/button';
 
 // import { SessionProvider } from 'next-auth/react'
 function modifyData(data: any): ProfileDataType {
@@ -222,9 +222,8 @@ const Home = () => {
                   value={profileData.secondaryProgram || ""}
                   onChange={handleChange("secondaryProgram")}
                 > 
-                  {programList.map((program) => (
-                  <MenuItem value={program}>{program}</MenuItem>
-
+                  {programList.map((program, index) => (
+                  <MenuItem key={index} value={program}>{program}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -512,10 +511,11 @@ const Home = () => {
           >
             <Button
               onClick={handleProfileUpdate}
-              variant="contained"
+              // variant="contained"
               type="submit"
-              sx={{backgroundColor:"black", "&:hover": { backgroundColor: "#008000de" }}}
+              // sx={{backgroundColor:"black", "&:hover": { backgroundColor: "#008000de" }}}
               // disabled={loading}
+              className='bg-emerald-600 hover:bg-emerald-500 text-white'
             >
               Update
             </Button>
