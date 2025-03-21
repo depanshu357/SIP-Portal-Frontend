@@ -25,6 +25,7 @@ const SignInBox = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, SetRememberMe] = useState(false)
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -33,9 +34,11 @@ const SignInBox = () => {
 
   const handleLogIn = async () => {
     console.log(email, password);
+    setLoading(true);
     const response = await doCredentialLogin({ email, password });
     if (!!response?.error || !response) {
       enqueueSnackbar(response.error, { variant: "error" });
+      setLoading(false);
       return;
     } else {
       enqueueSnackbar("Logged in successfully", { variant: "success" });
@@ -111,7 +114,7 @@ const SignInBox = () => {
                   </Link>
                 </div>
             <div className="flex justify-between mt-6">
-              <Button onClick={handleLogIn} className="ml-auto">
+              <Button onClick={handleLogIn} className="ml-auto" disabled={loading}>
                 Log In
               </Button>
             </div>

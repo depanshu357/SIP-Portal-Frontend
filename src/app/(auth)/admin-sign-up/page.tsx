@@ -29,7 +29,7 @@ const AdminSignUp = () => {
                 <Image src='/assets/images/user.png' width={24} height={20} alt="creativity" />
                 Log In
               </div>
-              <div className="flex flex-row cursor-pointer">
+              <div className="flex flex-row cursor-pointer" onClick={() => {router.push('/contact-us')}}>
                 <Image src='/assets/images/contact.png' width={24} height={20} alt="creativity" />
                 Contact Us
               </div>
