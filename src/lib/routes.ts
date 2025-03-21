@@ -5,5 +5,6 @@ export const PUBLIC_ROUTES = [
     '/sign-in',
     '/sign-up',
     '/forgot-password',
-    '/admin-sign-up'
+    '/admin-sign-up',
+    '/contact-us',
 ]
