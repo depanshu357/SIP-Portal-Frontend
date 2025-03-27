@@ -18,8 +18,12 @@ jobs:
 
       - name: Connect to VPN
         run: |
-          sudo nohup openconnect gateway.iitk.ac.in --user=${{ secrets.VPN_USER }} --passwd-on-stdin --authgroup=default <<< "${{ secrets.VPN_PASSWORD }}" &
-          sleep 10  # Wait for VPN to establish
+          echo -n "${{ secrets.VPN_PASSWORD }}" | sudo nohup openconnect gateway.iitk.ac.in \
+            --user=${{ secrets.VPN_USER }} \
+            --passwd-on-stdin \
+            --authgroup=default \
+            --no-dtls > /dev/null 2>&1 &
+          sleep 15  # Wait longer for VPN to establish
 
       - name: Connect via SSH and Deploy
         run: |
