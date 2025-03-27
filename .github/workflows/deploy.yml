@@ -27,5 +27,5 @@ jobs:
 
       - name: Connect via SSH and Deploy
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "screen -S sip_frontend -X stuff 'cd /home/vmadmin/SIP-Portal-Frontend && git pull origin main'"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -tt ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "screen -S sip_frontend -X stuff 'cd /home/vmadmin/SIP-Portal-Frontend && git pull origin main && npm install && npm run build && npm run start'"
