@@ -11,8 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install SSHPass
-        run: sudo apt-get install -y sshpass
+      - name: Install Required Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openconnect sshpass
+
+      - name: Connect to VPN
+        run: |
+          echo '${{ secrets.VPN_PASSWORD }}' | sudo openconnect gateway.iitk.ac.in --user=${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=anyconnect --servercert pin-sha256: 
+        &
+          sleep 10  # Wait for VPN to establish
 
       - name: Connect via SSH and Deploy
         run: |
