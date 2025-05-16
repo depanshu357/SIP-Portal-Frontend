@@ -249,11 +249,11 @@ const ForgotPasswordBox = () => {
             )}
 
             <div className="flex justify-between mt-6">
-              {step > 1 && (
+              {/* {step > 1 && (
                 <Button variant="outline" onClick={handleBack}>
                   Back
                 </Button>
-              )}
+              )} */}
               <Button onClick={handleNext} className="ml-auto">
                 {step === 1
                   ? "Send OTP"
