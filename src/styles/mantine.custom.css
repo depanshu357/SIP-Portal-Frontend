@@ -1,3 +1,8 @@
 .custom-mantile-text-reader{
     border:0;
 }
+
+.mantine-RichTextEditor-toolbar button[data-active="true"] {
+    background-color: #5ec78138;
+    /* border: 2px solid #007bff; */
+}

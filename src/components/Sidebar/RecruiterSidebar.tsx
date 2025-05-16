@@ -65,14 +65,6 @@ const initialLinks: Array<LinkType> = [
     isForEvent: true,
   },
   {
-    title: "Applicants",
-    label: "",
-    icon: ListAltIcon,
-    variant: "ghost",
-    href: "/recruiter/applicants",
-    isForEvent: true,
-  },
-  {
     title: "Events",
     label: "",
     icon: LayoutList,
@@ -173,8 +165,6 @@ const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {
       router.push("/recruiter/event");
     }
     handleLinks();
-    return () => {
-    };
   }, []);
   const handleEventLeave = () => {
     setEvent(EventDefault);

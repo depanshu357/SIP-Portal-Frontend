@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useContext, useState } from "react";
-// import ReactQuill from "react-quill-new";
 
 import CustomizedHook from "@/components/CustomizedMultiSelectAutoComplete";
 import axios from "axios";
@@ -58,8 +57,6 @@ const NoticeStudent = () => {
       </div>
       <div>
         <Label className="text-lg font-bold text-black">Content</Label>
-        {/* <QuillTextEditor value={value} setValue={setValue} /> */}
-        {/* <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} /> */}
         <RichTextEditor value={value} setValue={setValue}/>
       </div>
       <div className="flex flex-row-reverse">
