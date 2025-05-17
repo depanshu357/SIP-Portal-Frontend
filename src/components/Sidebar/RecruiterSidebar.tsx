@@ -96,14 +96,14 @@ const initialLinks: Array<LinkType> = [
     href: "/recruiter/contact-us",
     isForEvent: false,
   },
-  {
-    title: "About",
-    label: "",
-    icon: BadgeInfo,
-    variant: "ghost",
-    href: "/recruiter/about",
-    isForEvent: false,
-  },
+  // {
+  //   title: "About",
+  //   label: "",
+  //   icon: BadgeInfo,
+  //   variant: "ghost",
+  //   href: "/recruiter/about",
+  //   isForEvent: false,
+  // },
 ]
 
 const RecruiterSidebar = ({ children }: { children: React.ReactNode }) => {

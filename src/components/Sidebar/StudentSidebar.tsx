@@ -95,14 +95,14 @@ const initialLinks: Array<LinkType> = [
     href: "/student/contact-us",
     isForEvent: false,
   },
-  {
-    title: "About",
-    label: "",
-    icon: BadgeInfo,
-    variant: "ghost",
-    href: "/student/about",
-    isForEvent: false,
-  },
+  // {
+  //   title: "About",
+  //   label: "",
+  //   icon: BadgeInfo,
+  //   variant: "ghost",
+  //   href: "/student/about",
+  //   isForEvent: false,
+  // },
 ]
 
 const StudentSidebar = ({ children }: { children: React.ReactNode }) => {
