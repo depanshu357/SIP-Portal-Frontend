@@ -46,12 +46,12 @@ const ForgotPasswordBox = () => {
   };
 
   const handleNext = async () => {
+    setLoading(true);
     if (step === 1) {
       if (email === "") {
         enqueueSnackbar("Please fill all the fields", { variant: "error" });
         return;
       }
-      setLoading(true);
       axios
         .post(`${process.env.NEXT_PUBLIC_API_KEY}/send-otp`, { email: email })
         .then((res) => {
@@ -116,17 +116,17 @@ const ForgotPasswordBox = () => {
           password: password,
         })
         .then((res) => {
-          setLoading(false);
           enqueueSnackbar(res.data.message, { variant: "success" });
           router.push("/sign-in");
         })
         .catch((err) => {
           console.log(err);
-          setLoading(false);
           enqueueSnackbar(
             err.response?.data?.error ?? "Failed to change password",
             { variant: "error" }
           );
+        }).finally(() => {
+          setLoading(false);
         });
     }
     // setStep((prev) => prev + 1);
@@ -254,7 +254,7 @@ const ForgotPasswordBox = () => {
                   Back
                 </Button>
               )} */}
-              <Button onClick={handleNext} className="ml-auto">
+              <Button onClick={handleNext} className="ml-auto" disabled={loading}>
                 {step === 1
                   ? "Send OTP"
                   : step === 2
