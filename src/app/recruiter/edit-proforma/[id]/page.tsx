@@ -6,7 +6,7 @@ import { DateTimePicker } from "@mantine/dates";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Paper, TextField, Typography } from "@mui/material";
+import { Paper } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import {
   EventContextType,
@@ -14,18 +14,15 @@ import {
   EventType,
 } from "@/types/custom_types";
 import { EventContext } from "@/contexts/eventContext";
-import { JobDescriptionInput } from "@/types/custom_types";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import BranchProgramTable from "@/components/BranchProgramTable";
 import RichTextReader from "@/components/RichTextReader";
-import RichTextEditor from "@/components/RichTextEditor";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type Props = {};
 
 const EditProforma = (props: Props) => {
-  const [value, setValue] = useState("");
   const [timeValue, setTimeValue] = useState<Date>(new Date());
   const params = useParams();
   const router = useRouter();
@@ -122,9 +119,6 @@ const EditProforma = (props: Props) => {
             </div>
             <div className="mt-4">
               <Label className="text-lg font-bold text-black">Content</Label>
-              {/* <QuillTextEditor value={value} setValue={setValue} /> */}
-              {/* <ReactQuill className="custom-quill" theme="snow" value={value} onChange={setValue} /> */}
-              {/* <RichTextEditor value={jobDescription?.Description?.toString()} setValue={setValue} /> */}
               <RichTextReader
                 key={jobDescription?.ID}
                 value={jobDescription?.Description?.toString() ?? ""}

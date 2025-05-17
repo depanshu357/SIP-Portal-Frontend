@@ -30,6 +30,7 @@ type Props = {};
 const AdminSignUpBox = (props: Props) => {
   const [step, setStep] = useState<number>(1);
   const [userType, setUserType] = useState("admin");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -115,6 +116,7 @@ const AdminSignUpBox = (props: Props) => {
           email: email,
           password: password,
           role: userType,
+          name: name,
         })
         .then((res) => {
           enqueueSnackbar(res.data.message, { variant: "success" });
@@ -156,11 +158,21 @@ const AdminSignUpBox = (props: Props) => {
                   <div className="space-y-2">
                     <Label htmlFor="student-email">Email</Label>
                     <Input
-                      id="student-email"
+                      id="admin-email"
                       type="email"
                       placeholder="username@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="student-email">Name</Label>
+                    <Input
+                      id="admin-name"
+                      type="text"
+                      placeholder="Manindra Agrawal"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                 </div>
