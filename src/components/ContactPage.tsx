@@ -4,34 +4,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function ContactPage() {
   const contacts = [
     {
-      name: "Sarah Johnson",
-      position: "Chief Executive Officer",
-      phone: "+1 (555) 123-4567",
-      email: "sarah.johnson@example.com",
+      name: "Gargee Dhalkari",
+      position: "Head, Start-Up Internship Program",
+      phone: "+91 84597 87655",
+      email: "dhalkarigp23@iitk.ac.in",
     },
     {
-      name: "Michael Chen",
-      position: "Chief Technology Officer",
-      phone: "+1 (555) 234-5678",
-      email: "michael.chen@example.com",
+      name: "Anuj Agrawal",
+      position: "Overall Coordinator",
+      phone: "+91 70000 54528",
+      email: "anujag23@iitk.ac.in",
     },
     {
-      name: "Priya Patel",
-      position: "Head of Customer Relations",
-      phone: "+1 (555) 345-6789",
-      email: "priya.patel@example.com",
+      name: "Aryan Mittal",
+      position: "Overall Coordinator",
+      phone: "+91 85956 89515",
+      email: "amittal23@iitk.ac.in",
     },
     {
-      name: "James Wilson",
-      position: "Marketing Director",
-      phone: "+1 (555) 456-7890",
-      email: "james.wilson@example.com",
-    },
-    {
-      name: "Elena Rodriguez",
-      position: "Human Resources Manager",
-      phone: "+1 (555) 567-8901",
-      email: "elena.rodriguez@example.com",
+      name: "Abhay Saxena",
+      position: "Head, Web Development",
+      phone: "+91 93015 68760",
+      email: "abhaysa23@iitk.ac.in",
     },
   ]
 
