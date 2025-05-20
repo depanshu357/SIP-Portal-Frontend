@@ -75,9 +75,9 @@ export default function ContactPage() {
 
         <div className="mt-10 text-center">
           <p className="text-emerald-700 mb-2">General Inquiries</p>
-          <p className="text-emerald-600 font-medium">info@example.com | +1 (555) 987-6543</p>
+          <p className="text-emerald-600 font-medium">ecell@iitk.ac.in | +91 70000 54528</p>
           <p className="text-emerald-700 mt-4 mb-2">Office Hours</p>
-          <p className="text-emerald-600">Monday - Friday: 9:00 AM - 5:00 PM EST</p>
+          <p className="text-emerald-600">Monday - Friday: Morning to Evening</p>
         </div>
       </div>
     </div>
